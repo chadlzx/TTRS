@@ -1,3 +1,0 @@
-/home/yujie6/Documents/Algorithm/DataStructure/TTRS/BplusTree/build/CMakeFiles/rebuild_cache.dir
-/home/yujie6/Documents/Algorithm/DataStructure/TTRS/BplusTree/build/CMakeFiles/BplusTree.dir
-/home/yujie6/Documents/Algorithm/DataStructure/TTRS/BplusTree/build/CMakeFiles/edit_cache.dir
