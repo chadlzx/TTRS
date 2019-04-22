@@ -6,7 +6,7 @@ TTRS Big Homework :steam_locomotive::train:
   <li>打钱</li>
   <li>滚动头像</li>
   <li>抢票</li>
-  <li>游戏</li>
+  <li>游戏✔</li>
   <li>弹窗</li>
 </ul>
 <h3>二. 工作分配</h3>
@@ -45,8 +45,8 @@ TTRS Big Homework :steam_locomotive::train:
     href="https://yujie6.github.io/TTRS">https://yujie6.github.io/TTRS</a></p>
     其他要完成的
     <ul>
-      <li>login界面</li>
-      <li>signup界面</li>
+      <li>login界面✔</li>
+      <li>signup界面✔</li>
       <li>最新动态界面</li>
       <li>一些动画和背景</li>
       <li>滚动图片</li>
