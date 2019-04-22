@@ -8,18 +8,20 @@ p {
 body {
   position: relative;	
 }
+.main-wrap{
+	width:100%;
+	margin:auto;
+	max-width:525px;
+	position:relative;
+}
 .section-even {
   background: #f0f0f0;
   padding-top: 8rem;
-  padding-left: 16rem;
-  padding-right: 16rem;
   padding-bottom: 8rem;
 }
 .section-odd {
   background: #ffffff;
   padding-top: 8rem;
-  padding-left: 16rem;
-  padding-right: 16rem;
   padding-bottom: 8rem;
 }
 footer {
@@ -27,4 +29,31 @@ footer {
   padding-top: 1rem;
   padding-bottom: 1rem;
   
+}
+
+.btn.btn-primary {
+  background-color: transparent;
+  border: 1px solid #007FFF;
+  -webkit-transition: all .35s;
+  -moz-transition: all .35s;
+  transition: all .35s;
+  color: #007FFF;
+}
+
+.btn.btn-primary:hover {
+  opacity: 0.7;
+}
+
+.btn-primary-outline {
+  border-color: #007FFF;
+  color: #007FFF;
+}
+
+.btn-primary-outline:hover {
+  background-color: #007FFF;
+}
+
+.btn-xl {
+  padding: 10px 15px;
+  font-size: 20px;
 }
