@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html>
+<meta charset="UTF-8">
+<html lang="zh">
 
 <head>
     <title>TTRS</title>
@@ -17,6 +18,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+    <script src="js/main.js"></script>
 </head>
 
 <body data-spy="scroll" data-target="#navbar" data-offset="0">
@@ -43,15 +45,36 @@
     <div id="section1" class="section-odd">
         <div class="container main-wrap" style="text-align: center">
             <h3 style="text-align:center">您可以在这里抢票</h3>
-            <form >
+            <form style="margin-top: 10%">
                 <div class="form-row">
                     <div class="form-group col-md-12">
-                        <label for="inputEmail4">出发地</label>
-                        <input type="email" class="form-control" id="inputEmail4" placeholder="闵行">
+                        <label for="inputDepart" >出发地</label>
+                        <div class="input-group">
+                       <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            请选择<span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="javascript:void(0);" onclick="drop_Down('inputDepart','闵行')">闵行</a></li>
+                            <li><a href="javascript:void(0);" onclick="drop_Down('inputDepart','五角场')">五角场</a></li>
+                        </ul>
+
+                        <input type="text" class="form-control" id="inputDepart" placeholder="闵行" value="闵行">
+                        </div>
                     </div>
+                    <a href="javascript:void(0);" onclick="swap();">交换出发/目的地</a>
                     <div class="form-group col-md-12">
-                        <label for="inputPassword4">目的地</label>
-                        <input type="password" class="form-control" id="inputPassword4" placeholder="五角场">
+                        <label for="inputDest">目的地</label>
+                        <div class="input-group">
+                            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                请选择<span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="javascript:void(0);" onclick="drop_Down('inputDest','闵行');">闵行</a></li>
+                                <li><a href="javascript:void(0);" onclick="drop_Down('inputDest','五角场');">五角场</a></li>
+                            </ul>
+
+                            <input type="text" class="form-control" id="inputDest" placeholder="五角场" value="五角场">
+                        </div>
                     </div>
                 </div>
             </form>
