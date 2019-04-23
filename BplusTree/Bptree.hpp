@@ -20,6 +20,7 @@ namespace sjtu {
     class Bptree {
     public:
         class node;
+        class block;
 
     private:
         node * root;
@@ -30,45 +31,27 @@ namespace sjtu {
         bool Fewer(Key a, Key b, Compare C = Compare()){
             return C(a, b);
         }
+        bool Equal(Key a, Key b){
+            return !(Fewer(a,b) || Fewer(b,a));
+        }
 
         class node{
-            node * Children;
-            value_type data;
+            node * Children, father;
+            value_type * data;
             int CurrentChildren;
-
-            node(){
-                Children = (node *)operator new(sizeof(node) * NumOfChildren);
-                CurrentChildren = 0;
+            node * prev, next;
+            int type;
+            void AddChildren(node * p){
+                if (CurrentChildren < NumOfChildren){
+                    Children[CurrentChildren] = p;
+                    CurrentChildren++;
+                    p->father = this;
+                }
+                else if (CurrentChildren == NumOfChildren) {
+                    //TODO Blance
+                }
             }
-            ~node(){
-                operator delete(Children);
-            }
-        };
-        class iterator {
-        private:
-
-        public:
-            iterator() {
-            }
-
-            iterator(const iterator &other) {
-            }
-
-            iterator operator++(int) {}
-
-            iterator &operator++() {}
-
-            iterator operator--(int) {}
-
-            iterator &operator--() {}
-
-            value_type &operator*() const {}
-
-            bool operator==(const iterator &rhs) const {}
-
-            bool operator!=(const iterator &rhs) const {}
-
-            value_type *operator->() const noexcept {}
+            node *
         };
 
 
@@ -96,31 +79,26 @@ namespace sjtu {
 
         const T &operator[](const Key &key) const {}
 
-
-        iterator begin() {}
-
-        iterator end() {}
-
         bool empty() const {}
 
         size_t size() const {}
 
         void clear() {}
 
-        pair<iterator, bool> insert(const value_type &value) {
+        bool insert(const value_type &value) {
 
         }
 
-        void erase(iterator pos) {}
 
         size_t count(const Key &key) const { return CurrentLen;}
 
-        iterator find(const Key &key) {}
 
     private:
-        node * Find(Key key){
+        node * Search(Key key){
             node * p = root;
-            if ()
+            while(){
+
+            }
         }
     };
 
