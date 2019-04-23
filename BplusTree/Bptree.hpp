@@ -40,7 +40,7 @@ namespace sjtu {
             value_type * data;
             int CurrentChildren;
             node * prev, next;
-            int type;
+            int type; // type (0: node) (1: datablcok)
             void AddChildren(node * p){
                 if (CurrentChildren < NumOfChildren){
                     Children[CurrentChildren] = p;
@@ -51,7 +51,17 @@ namespace sjtu {
                     //TODO Blance
                 }
             }
-            node *
+            node(int t, node * f = nullptr, node * p = nullptr, node * n = nullptr):
+            type(t), father(f), prev(p), next(n) {
+                if (type == 0){
+                    data = (value_type * )operator new(sizeof(value_type) * (NumOfChildren-1) );
+                    Children = new node [NumOfChildren];
+                }
+                else if (type){
+                    data = (value_type *)operator new(sizeof(value_type) * DataSize);
+                    Children = nullptr;
+                }
+            }
         };
 
 
@@ -60,7 +70,7 @@ namespace sjtu {
             CurrentLen = 0;
         }
 
-        Bptree(const Bptree &other) {}
+        //Bptree(const Bptree &other) {}
 
 
         Bptree &operator=(const Bptree &other) {}
@@ -71,22 +81,44 @@ namespace sjtu {
 
         T &at(const Key &key) {}
 
-        const T &at(const Key &key) const {}
-
-
         T &operator[](const Key &key) {}
 
+        bool empty() const { return (CurrentLen == 0);}
 
-        const T &operator[](const Key &key) const {}
+        size_t size() const {return CurrentLen; }
 
-        bool empty() const {}
+        void clear() {
+            ClearNode(root);
+            CurrentLen = 0;
+        }
 
-        size_t size() const {}
-
-        void clear() {}
+        void ClearNode(node * p){
+            for (int i = 0; i < p->CurrentChildren; i++){
+                ClearNode(p->Children[i]);
+            }
+            delete p->data; delete p;
+        }
 
         bool insert(const value_type &value) {
+            node * p = Search(value.first);
+            if (p->CurrentChildren < DataSize){
+                p->data[p->CurrentChildren] = value;
+                p->CurrentChildren++;
+            }
+            else{
+                //TODO Balance
+            }
+        }
 
+        node * erase(const Key key){
+            node * p = Search(key);
+            if (p->CurrentChildren-1 >= DataSize/2 ){
+                //p->data[p->CurrentChildren-1] 要析构吗
+                p->CurrentChildren--;
+            }
+            else{
+                //TODO BALANCE
+            }
         }
 
 
@@ -96,10 +128,16 @@ namespace sjtu {
     private:
         node * Search(Key key){
             node * p = root;
-            while(){
-
+            while(p->type != 1){
+                for (int i = 0; i < p->CurrentChildren-1; i++){
+                    if (Fewer(key, p->data[i])){
+                        p = p->Children[i];
+                    }
+                }
             }
+            return p;
         }
+
     };
 
 }
