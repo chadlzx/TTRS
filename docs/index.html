@@ -9,22 +9,20 @@
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="https://fonts.font.im/css?family=Raleway:300" rel="stylesheet">
     <link rel="stylesheet" href="./css/main.css">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
         crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
-    <script src="js/main.js"></script>
+
 </head>
 
 <body data-spy="scroll" data-target="#navbar" data-offset="0">
 
 
-    <nav id="navbar" class="navbar navbar-light fixed-top" style="background-color: #e3f2fd;">
+    <nav id="navbar" class="navbar navbar-light fixed-top" style="box-shadow: 2px 2px 2px #acacac;">
         <a class="navbar-brand" href="#">火车票订票系统</a>
         <ul class="nav nav-pills">
             <li class="nav-item">
@@ -37,73 +35,84 @@
                 <a href="#section3" class="nav-link">游戏</a>
             </li>
             <li class="nav-item">
-                <a href="./html/login.html" class="nav-link">登录</a>
+                <a href="./html/login.html" style=" border-radius: 19px"
+                    class="nav-link btn btn-outline-success">登录/注册</a>
             </li>
         </ul>
     </nav>
 
-    <div id="section1" class="section-odd">
+    <div id="section1" class="section-odd" style="text-align: center">
         <div class="container main-wrap" style="text-align: center">
-            <h3 style="text-align:center">您可以在这里抢票</h3>
-            <form style="margin-top: 10%">
-                <div class="form-row">
-                    <div class="form-group col-md-12">
-                        <label for="inputDepart" >出发地</label>
-                        <div class="input-group">
-                       <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                            请选择<span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a href="javascript:void(0);" onclick="drop_Down('inputDepart','闵行')">闵行</a></li>
-                            <li><a href="javascript:void(0);" onclick="drop_Down('inputDepart','五角场')">五角场</a></li>
-                        </ul>
-
-                        <input type="text" class="form-control" id="inputDepart" placeholder="闵行" value="闵行">
-                        </div>
-                    </div>
-                    <a href="javascript:void(0);" onclick="swap();">交换出发/目的地</a>
-                    <div class="form-group col-md-12">
-                        <label for="inputDest">目的地</label>
-                        <div class="input-group">
-                            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                请选择<span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a href="javascript:void(0);" onclick="drop_Down('inputDest','闵行');">闵行</a></li>
-                                <li><a href="javascript:void(0);" onclick="drop_Down('inputDest','五角场');">五角场</a></li>
-                            </ul>
-
-                            <input type="text" class="form-control" id="inputDest" placeholder="五角场" value="五角场">
-                        </div>
+            <h3 style="text-align:center; color: cornflowerblue">您可以在这里抢票</h3>
+            <div style="margin-top: 5px; text-align: center">
+                <div class="form-group row">
+                    <label for="inputDest " class="col-2 col-form-label">出发地</label>
+                    <div class="col-10">
+                        <input type="text" style="border-radius: 20px" class=" form-control" id="inputDest"
+                            placeholder="闵行">
                     </div>
                 </div>
-            </form>
-            <a href="#" style="text-align:center" class="btn btn-outline-primary btn-xl">快速抢票</a>
-        </div>
-    </div>
-    <div id="section2" class="section-even">
-        <div class="container main-wrap">
-            <h3 style="text-align:center">您可以在这里<a href="./html/upgrade.html">打钱</a></h3>
-            <div>
-                <p>我们支持微信和支付宝。</p>
-                <div class="card" style="width: 18rem;">
-                    <div class="card-body">
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                            card's content.</p>
+                <div class="form-group row">
+                    <label for="inputDest " class="col-2 col-form-label">目的地</label>
+                    <div class="col-10">
+                        <input type="text" style="border-radius: 20px" class=" form-control" id="inputDest"
+                            placeholder="五角场">
                     </div>
                 </div>
-                <div class="card" style="width: 18rem;">
-                    
-                    <div class="card-body">
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                            card's content.</p>
+                <div class="form-group row">
+                    <label for="inputDest " class="col-2 col-form-label">出发日期</label>
+                    <div class="col-10">
+                        <input type="text" style="border-radius: 20px" class=" form-control" id="inputDest"
+                            placeholder="2019/04/24">
                     </div>
                 </div>
             </div>
         </div>
+        <a href="#" style="text-align:center; font-size: 22px" class="btn btn-primary-outline ">快速抢票</a>
+    </div>
+    </div>
+    <div id="section2" class="section-even">
+        <div class="container main-wrap">
+            <h3 style="text-align:left">铁路旅游</h3>
+            <div style="text-align: center">
+                <div class="container row">
+                    <div class="col-4" >
+                        <div class="card" style="width: 250px;">
+                            <img src="./image/sample1.jpeg" class="card-img-top" alt="...">
+                            <div class="card-body" style="padding: 2px">
+                                <p class="card-text" style="font-size: 16px">东川路水上乐园豪华三日游</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4" >
+                            <div class="card" style="width: 250px;">
+                                <img src="./image/sample1.jpeg" class="card-img-top" alt="...">
+                                <div class="card-body" style="padding: 2px">
+                                    <p class="card-text" style="font-size: 16px">东川路水上乐园豪华三日游</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4" >
+                                <div class="card" style="width: 250px;">
+                                    <img src="./image/sample1.jpeg" class="card-img-top" alt="...">
+                                    <div class="card-body" style="padding: 2px">
+                                        <p class="card-text" style="font-size: 16px">东川路水上乐园豪华三日游</p>
+                                    </div>
+                                </div>
+                            </div>
+                </div>
+
+            </div>
+
+            <h3 style="padding-top: 30px; text-align:center">喜欢旅游？经常出差？加入12307会员！优惠与您常在。</h3>
+            <div style="text-align: center">
+                <a href="./html/upgrade.html" style="text-align:center; font-size: 22px; width: 270px"
+                    class="btn btn-primary-outline ">查看适合您的方案</a>
+            </div>
+        </div>
     </div>
     <div id="section3" class="section-odd main-wrap">
-        <h3 style="text-align:center">您可以在<a href="./html/game.html">这里</a>玩游戏</h3>
+        <h3 style="text-align:center">抢票抢累了？为什么不来一局紧张刺激的<a href="./html/game.html">2048</a>呢？</h3>
     </div>
     <footer>
         <p style="text-align: center; font-size: 15px">© 2019 午夜火车女团. Powered by <a

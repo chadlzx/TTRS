@@ -1,9 +1,12 @@
 li, a, th, td ,h2, h3, h4, h5, h6 {
   font-family: 'Raleway', sans-serif;
 }
+a{
+  color: #1bbc9d;
+}
 p {
   font-family: 'Raleway', sans-serif;
-  font-size: 1.4em;
+  font-size: 22px;
 }
 body {
   position: relative;	
@@ -11,7 +14,7 @@ body {
 .main-wrap{
 	width:100%;
 	margin:auto;
-	max-width:525px;
+	max-width:760px;
 	position:relative;
 }
 .section-even {
@@ -28,16 +31,19 @@ footer {
   background: #f0f0f0;
   padding-top: 1rem;
   padding-bottom: 1rem;
-  
+  font-size: 12px;
 }
 
 .btn.btn-primary {
   background-color: transparent;
-  border: 1px solid #007FFF;
+  border: 1px solid #1bbc9d;
   -webkit-transition: all .35s;
   -moz-transition: all .35s;
   transition: all .35s;
-  color: #007FFF;
+  color: #1bbc9d;
+}
+.btn{
+  border-radius: 20px;
 }
 
 .btn.btn-primary:hover {
@@ -45,15 +51,22 @@ footer {
 }
 
 .btn-primary-outline {
-  border-color: #007FFF;
-  color: #007FFF;
+  border-color: #1bbc9d;
+  color: #1bbc9d;
+  min-width: 140px;
+  border-radius: 23px;
 }
 
 .btn-primary-outline:hover {
-  background-color: #007FFF;
+  background-color: #1bbc9d;
 }
 
 .btn-xl {
   padding: 10px 15px;
   font-size: 20px;
+  border-radius: 32px;
+}
+
+.myinput{
+  border-radius: 20px;
 }
