@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cstring>
 #include <deque>
+#include <cassert>
 #include "./utility.hpp"
 #include "./exceptions.hpp"
 
@@ -24,6 +25,7 @@ namespace sjtu {
     class Bptree {
     public:
         class node;
+
         class block;
 
     private:
@@ -54,7 +56,7 @@ namespace sjtu {
              */
             friend class Bptree;
 
-            node *Children[IndexSize+1], *father;
+            node *Children[IndexSize + 1], *father;
             std::deque<value_type> data;
             int NumChild;
             node *prev, *next;
@@ -67,11 +69,10 @@ namespace sjtu {
             void BinInsert(value_type value) {
                 if (type == 1) {
                     data.push_back(value);
-                    for (int i = NumChild; i >= 1; i--){
-                        if (data[i] < data[i-1]) {
-                            std::swap(data[i], data[i-1]);
-                        }
-                        else break;
+                    for (int i = NumChild; i >= 1; i--) {
+                        if (data[i] < data[i - 1]) {
+                            std::swap(data[i], data[i - 1]);
+                        } else break;
                     }
                     NumChild++;
                 }
@@ -137,6 +138,7 @@ namespace sjtu {
          *  there're 3 cases in total
          */
         bool insert(const value_type &value) {
+            if(root != nullptr) PrintNode(root);
             CurrentLen++;
             /*
              *  Insert first element
@@ -167,7 +169,7 @@ namespace sjtu {
                     p->BinInsert(value);
                     SplitLeafRoot(value, p);
                     return true;
-                } else if (p->father->NumChild + 1 < IndexSize) {
+                } else if (p->father->NumChild < IndexSize) {
                     p->BinInsert(value);
                     SplitLeaf(p);
                     /*
@@ -181,7 +183,7 @@ namespace sjtu {
                      */
                     p->BinInsert(value);
                     SplitLeaf(p);
-                    if(p->father == root) SplitIndexRoot(p->father);
+                    if (p->father == root) SplitIndexRoot(p->father);
                 }
 
             }
@@ -242,7 +244,7 @@ namespace sjtu {
              *  TODO Debug
              */
             node *NewLeaf = new node(1);
-            node * fa = p->father;
+            node *fa = p->father;
             for (int i = PageSize / 2; i <= PageSize - 1; i++) {
                 NewLeaf->data.push_back(p->data[i]);
             }
@@ -261,8 +263,9 @@ namespace sjtu {
                 nextp->prev = NewLeaf;
                 NewLeaf->next = nextp;
             }
-            for (int i = PageSize / 2; i <= PageSize -1; i++) p->data.erase(p->data.begin() + i);
+            for (int i = PageSize / 2; i <= PageSize - 1; i++) p->data.erase(p->data.begin() + i);
         }
+
         /*
          *  Split a index-page into 2 index-pages, then create a
          *  link to their father index page.
@@ -272,47 +275,55 @@ namespace sjtu {
          *        /     \
          *    (3, 6)  (12, 15)
          */
-        void SplitIndex(node * &p){
+        void SplitIndex(node *&p) {
             /*
              *  Case 1: p is not root
              *     do it recursively;
              */
         }
+
         /*
          *  Split index page while it's root
          */
-        void SplitIndexRoot(node * &p){
+        void SplitIndexRoot(node *&p) {
             /*
              *  Case 2: p is root of the tree
              */
-            node * fa = new node(0);
+            node *fa = new node(0);
             fa->NumChild = 2;
-            node * brother = new node(0);
-            for (int i = IndexSize/2+1; i <= IndexSize; i++){
-                brother->Children[i-IndexSize/2-1] = p->Children[i];
+            node *brother = new node(0);
+            for (int i = IndexSize / 2 + 1; i <= IndexSize; i++) {
+                brother->Children[i - IndexSize / 2 - 1] = p->Children[i];
                 p->Children[i]->father = brother;
+                /*
+                 *  why suddenly changed
+                 *  it's so freaking weird
+                 */
             }
-            brother->NumChild = IndexSize - IndexSize/2;
-            p->NumChild = IndexSize/2+1;
-            for (int i = IndexSize/2+1; i < IndexSize; i++){
+            brother->NumChild = IndexSize - IndexSize / 2;
+            p->NumChild = IndexSize / 2 + 1;
+            for (int i = IndexSize / 2 + 1; i < IndexSize; i++) {
                 brother->data.push_back(p->data[i]);
             }
-            fa->data.push_back(p->data[IndexSize/2]);
-            for (int i = IndexSize/2; i < IndexSize; i++) p->data.erase(p->data.begin() + i);
-            fa->Children[0] = p; p->father = fa;
-            fa->Children[1] = brother; brother->father = fa;
+            fa->data.push_back(p->data[IndexSize / 2]);
+            for (int i = IndexSize / 2; i < IndexSize; i++) p->data.erase(p->data.begin() + i);
+            fa->Children[0] = p;
+            p->father = fa;
+            fa->Children[1] = brother;
+            brother->father = fa;
             root = fa;
         }
+
         /*
          *  Initial situation that leafpage is root
          *  Insert and develop new root
          */
         inline void SplitLeafRoot(const value_type &value, node *&p) {
-            node * NewLeaf = new node(1);
+            node *NewLeaf = new node(1);
             for (int i = PageSize / 2; i <= PageSize - 1; i++) {
                 NewLeaf->data.push_back(p->data[i]);
             }
-            for (int i = PageSize / 2; i <= PageSize -1; i++) p->data.erase(p->data.begin() + i);
+            for (int i = PageSize / 2; i <= PageSize - 1; i++) p->data.erase(p->data.begin() + i);
             p->NumChild = PageSize / 2;
             NewLeaf->NumChild = PageSize - PageSize / 2;
             node *fa = new node(0);
@@ -326,12 +337,21 @@ namespace sjtu {
             NewLeaf->prev = p; //TODO p->next->prev = NewLeaf
             root = fa;
         }
+
         /*
          *  When leaf page p is full, we can use space from it's brother
          *  by rotation otherwise there'll be too much split and leaf page is not always full
          */
-        void RotateLeafPage(node * &p){
+        void RotateLeafPage(node *&p) {
 
+        }
+
+        void PrintNode(node *&p){
+            std::cout << CurrentLen << ": ";
+            for (int i = 0; i < p->NumChild-1; i++){
+                std::cout << p->data[i].first << " ";
+            }
+            std::cout << "\n";
         }
     };
 
