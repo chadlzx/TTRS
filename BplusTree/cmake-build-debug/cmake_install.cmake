@@ -1,4 +1,4 @@
-# Install script for directory: /home/yujie6/Documents/Algorithm/DataStructure/TTRS/BplusTree
+# Install script for directory: /home/yujie6/Entertainment/TTRS/BplusTree
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/yujie6/Documents/Algorithm/DataStructure/TTRS/BplusTree/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/yujie6/Entertainment/TTRS/BplusTree/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
