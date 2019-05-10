@@ -55,7 +55,7 @@ namespace sjtu {
              */
             friend class Bptree;
 
-            node *Children[IndexSize+1], *father;
+            node *Children[IndexSize+2], *father;
             std::deque<value_type> data;
             int NumChild;
             node *prev, *next;
@@ -75,6 +75,15 @@ namespace sjtu {
                     }
                     NumChild++;
                 }
+            }
+            /*
+             *  Erase key of node p.
+             *  If it's p->data[0] in the indexpage like p->father
+             *  then add p->data[1] to indexpage in place of the formal p->data[0]
+             *  TODO: improve to binary search
+             */
+            void BinErase(Key key){
+
             }
 
             node(int t, node *f = nullptr, node *p = nullptr, node *n = nullptr) :
@@ -183,6 +192,7 @@ namespace sjtu {
                     p->BinInsert(value);
                     SplitLeaf(p);
                     if (p->father == root) SplitIndexRoot(p->father);
+                    else SplitIndex(p->father);
                     return true;
                 }
 
@@ -191,16 +201,20 @@ namespace sjtu {
 
         /*
          *  Also 3 cases;
-         *  Case 1: LeafPageSize > PageSize / 2; Just erase directly
-         *  Case 2: else
+         *  Consider Fillfactor = LeafSize/2 or IndexSize/2
+         *  Case 1: LeafPageSize > FillFactor; Just erase (and update data of Indexpage)
+         *  Case 2: else if IndexPageSize > FillFactor; Merge Leaf p and its brother
+         *  Case 3: IndexPageSize& LeafPageSize <= FillFactor
+         *      Merge recursively
          */
         node *erase(const Key key) {
             node *p = Search(key);
             if (p->NumChild - 1 >= PageSize / 2) {
-                p->NumChild--;
+                p->BinErase(key);
                 return p;
             } else {
-                if (p->father->NumChild >= IndexSize / 2) {
+                if (p->father->NumChild > IndexSize / 2) {
+
                 } else {
 
                 }
@@ -275,17 +289,32 @@ namespace sjtu {
          *        /     \
          *    (3, 6)  (12, 15)
          */
-        void SplitIndex(node *&p) {
+        void SplitIndex(node *p) {
             /*
              *  Case 1: p is not root
              *     do it recursively;
              */
+            while(p != root) {
+                if (p->NumChild > IndexSize) {
+                    node * brother = GetBrother(p);
+                    p->NumChild = IndexSize / 2 + 1;
+                    p->father->data.push_back(p->data[IndexSize / 2]);
+                    p->father->Children[p->father->NumChild] = brother;
+                    brother->father = p->father;
+                    p->father->NumChild++;
+                    p = p->father;
+                }
+                else break;
+            }
+            if (p == root && p->NumChild > IndexSize) {
+                SplitIndexRoot(p);
+            }
         }
 
         /*
          *  Split index page while it's root
          */
-        inline void SplitIndexRoot( node *&p) {
+        inline void SplitIndexRoot( node *p) {
             /*
              *  Case 2: p is root of the tree
              */
