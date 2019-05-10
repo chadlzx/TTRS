@@ -25,7 +25,6 @@ namespace sjtu {
     class Bptree {
     public:
         class node;
-
         class block;
 
     private:
@@ -56,7 +55,7 @@ namespace sjtu {
              */
             friend class Bptree;
 
-            node *Children[IndexSize + 1], *father;
+            node *Children[IndexSize+1], *father;
             std::deque<value_type> data;
             int NumChild;
             node *prev, *next;
@@ -184,6 +183,7 @@ namespace sjtu {
                     p->BinInsert(value);
                     SplitLeaf(p);
                     if (p->father == root) SplitIndexRoot(p->father);
+                    return true;
                 }
 
             }
@@ -285,26 +285,15 @@ namespace sjtu {
         /*
          *  Split index page while it's root
          */
-        void SplitIndexRoot(node *&p) {
+        inline void SplitIndexRoot( node *&p) {
             /*
              *  Case 2: p is root of the tree
              */
             node *fa = new node(0);
             fa->NumChild = 2;
-            node *brother = new node(0);
-            for (int i = IndexSize / 2 + 1; i <= IndexSize; i++) {
-                brother->Children[i - IndexSize / 2 - 1] = p->Children[i];
-                p->Children[i]->father = brother;
-                /*
-                 *  why suddenly changed
-                 *  it's so freaking weird
-                 */
-            }
-            brother->NumChild = IndexSize - IndexSize / 2;
+            node * brother = GetBrother(p);
             p->NumChild = IndexSize / 2 + 1;
-            for (int i = IndexSize / 2 + 1; i < IndexSize; i++) {
-                brother->data.push_back(p->data[i]);
-            }
+
             fa->data.push_back(p->data[IndexSize / 2]);
             for (int i = IndexSize / 2; i < IndexSize; i++) p->data.erase(p->data.begin() + i);
             fa->Children[0] = p;
@@ -312,6 +301,22 @@ namespace sjtu {
             fa->Children[1] = brother;
             brother->father = fa;
             root = fa;
+        }
+        /*
+         * Serve for SplitIndexRoot.
+         * Do not use REFERENCE!!
+         */
+        node * GetBrother( node * p) {
+            node *brother = new node(0);
+            for (int i = IndexSize / 2 + 1; i <= IndexSize; i++) {
+                brother->Children[i - IndexSize / 2 - 1] = p->Children[i];
+                p->Children[i]->father = brother;
+            }
+            brother->NumChild = IndexSize - IndexSize / 2;
+            for (int i = IndexSize / 2 + 1; i < IndexSize; i++) {
+                brother->data.push_back(p->data[i]);
+            }
+            return brother;
         }
 
         /*
