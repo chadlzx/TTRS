@@ -25,6 +25,7 @@ namespace sjtu {
     class Bptree {
     public:
         class node;
+
         class block;
 
     private:
@@ -55,7 +56,7 @@ namespace sjtu {
              */
             friend class Bptree;
 
-            node *Children[IndexSize+2], *father;
+            node *Children[IndexSize + 1], *father;
             std::deque<value_type> data;
             int NumChild;
             node *prev, *next;
@@ -76,14 +77,33 @@ namespace sjtu {
                     NumChild++;
                 }
             }
+
             /*
              *  Erase key of node p.
              *  If it's p->data[0] in the indexpage like p->father
              *  then add p->data[1] to indexpage in place of the formal p->data[0]
              *  TODO: improve to binary search
              */
-            void BinErase(Key key){
+            void BinErase(Key key) {
+                int pos = BinSearch(key);
+                data.erase(data.begin() + pos);
+                if (pos == 0) {
+                    pos = father->BinSearch(key);
+                    father->data[pos] = data[0];
+                }
+                NumChild--;
+            }
 
+            int BinSearch(Key key) {
+                if (type) {
+                    for (int i = 0; i < NumChild; i++) {
+                        if (Equal(key, data[i].first)) return i;
+                    }
+                } else {
+                    for (int i = 0; i < NumChild - 1; i++) {
+                        if (Equal(key, data[i].first)) return i;
+                    }
+                }
             }
 
             node(int t, node *f = nullptr, node *p = nullptr, node *n = nullptr) :
@@ -96,6 +116,10 @@ namespace sjtu {
 
             bool Fewer(Key a, Key b, Compare C = Compare()) {
                 return C(a, b);
+            }
+
+            bool Equal(Key a, Key b) {
+                return !(Fewer(a, b) || Fewer(b, a));
             }
         };
 
@@ -146,7 +170,7 @@ namespace sjtu {
          *  there're 3 cases in total
          */
         bool insert(const value_type &value) {
-            if(root != nullptr) PrintNode(root);
+            if (root != nullptr) PrintNode(root);
             CurrentLen++;
             /*
              *  Insert first element
@@ -202,21 +226,30 @@ namespace sjtu {
         /*
          *  Also 3 cases;
          *  Consider Fillfactor = LeafSize/2 or IndexSize/2
-         *  Case 1: LeafPageSize > FillFactor; Just erase (and update data of Indexpage)
-         *  Case 2: else if IndexPageSize > FillFactor; Merge Leaf p and its brother
-         *  Case 3: IndexPageSize& LeafPageSize <= FillFactor
-         *      Merge recursively
          */
         node *erase(const Key key) {
             node *p = Search(key);
             if (p->NumChild - 1 >= PageSize / 2) {
+                /*
+                 * Case 1: LeafPageSize > FillFactor;
+                 *      Just erase (and update data of Indexpage)
+                 */
                 p->BinErase(key);
                 return p;
             } else {
                 if (p->father->NumChild > IndexSize / 2) {
-
+                    /*
+                     *  Case 2: else if IndexPageSize > FillFactor;
+                     *      Get data from brother if brother is larger then fillfactor
+                     *      else Merge Leaf p and its brother
+                     */
+                    p->BinErase(key);
+                    LendOrMerge(p);
                 } else {
-
+                    /*
+                     * Case 3: IndexPageSize& LeafPageSize <= FillFactor
+                     *      Lend and merge recursively
+                     */
                 }
 
             }
@@ -253,7 +286,7 @@ namespace sjtu {
          *  SplitLeaf a max-size node p into 2 nodes
          *  and link them with their father (maintain index !)
          */
-        void SplitLeaf(node * &p) {
+        void SplitLeaf(node *&p) {
             /*
              *  TODO Debug
              */
@@ -294,17 +327,16 @@ namespace sjtu {
              *  Case 1: p is not root
              *     do it recursively;
              */
-            while(p != root) {
+            while (p != root) {
                 if (p->NumChild > IndexSize) {
-                    node * brother = GetBrother(p);
+                    node *brother = GetBrother(p);
                     p->NumChild = IndexSize / 2 + 1;
                     p->father->data.push_back(p->data[IndexSize / 2]);
                     p->father->Children[p->father->NumChild] = brother;
                     brother->father = p->father;
                     p->father->NumChild++;
                     p = p->father;
-                }
-                else break;
+                } else break;
             }
             if (p == root && p->NumChild > IndexSize) {
                 SplitIndexRoot(p);
@@ -314,13 +346,13 @@ namespace sjtu {
         /*
          *  Split index page while it's root
          */
-        inline void SplitIndexRoot( node *p) {
+        inline void SplitIndexRoot(node *p) {
             /*
              *  Case 2: p is root of the tree
              */
             node *fa = new node(0);
             fa->NumChild = 2;
-            node * brother = GetBrother(p);
+            node *brother = GetBrother(p);
             p->NumChild = IndexSize / 2 + 1;
 
             fa->data.push_back(p->data[IndexSize / 2]);
@@ -331,11 +363,12 @@ namespace sjtu {
             brother->father = fa;
             root = fa;
         }
+
         /*
          * Serve for SplitIndexRoot.
          * Do not use REFERENCE!!
          */
-        node * GetBrother( node * p) {
+        node *GetBrother(node *p) {
             node *brother = new node(0);
             for (int i = IndexSize / 2 + 1; i <= IndexSize; i++) {
                 brother->Children[i - IndexSize / 2 - 1] = p->Children[i];
@@ -376,13 +409,72 @@ namespace sjtu {
          *  When leaf page p is full, we can use space from it's brother
          *  by rotation otherwise there'll be too much split and leaf page is not always full
          */
-        void RotateLeafPage(node *&p) {
+        void RotateLeafPage(node *p) {
 
         }
 
-        void PrintNode(node *&p){
+        /*
+         *  To keep LeafPageSize larger then fillfactor
+         *  we consider 3 cases
+         *  Case 1: prev is large enough, then take one data of prev to p;
+         *  Case 2: next is large(if there is one), then do the same
+         *  Case 3: both are not enough, merge prev and p;
+         */
+        void LendOrMerge(node *p) {
+            int sit = 0;
+            if (p->prev != nullptr) {
+                if (p->prev->NumChild > PageSize) sit = 1;
+            }
+            if (sit == 0){
+                if (p->next != nullptr) {
+                    if (p->next->NumChild > PageSize) sit = 2;
+                    else sit = 3;
+                }
+            }
+            switch (sit) {
+                case 1: {
+                    node *pre = p->prev;
+                    p->BinInsert(pre->data.back());
+                    pre->data.pop_back();
+                    pre->NumChild--;
+                    break;
+                }
+                case 2: {
+                    node * nxt = p->next;
+                    p->BinInsert(nxt->data.front());
+                    nxt->data.pop_front();
+                    nxt->NumChild--;
+                    break;
+                }
+                case 3: {
+                    if (p->prev != nullptr) MergeLeafPage(p->prev);
+                    else MergeLeafPage(p);
+                    break;
+                }
+            }
+        }
+        /*
+         *  Merge p and p->next
+         *  and update p->father->data as well as p->father->Children
+         */
+        void MergeLeafPage(node *p){
+            node * nxt = p->next;
+            node * fa = p->father;
+            for (int i = p->NumChild; i < p->NumChild + nxt->NumChild; i++){
+                p->Children[i] = nxt->Children[i-p->NumChild];
+            }
+            p->NumChild += nxt->NumChild;
+            fa->NumChild--;
+
+            p->next = nxt->next; //consider null?
+            nxt->next->prev = p;
+
+            delete nxt;
+        }
+
+        void PrintNode(node *p) {
             std::cout << CurrentLen << ": ";
-            for (int i = 0; i < p->NumChild-1; i++){
+            for (int i = 0; i < p->NumChild - 1; i++) {
                 std::cout << p->data[i].first << " ";
             }
             std::cout << "\n";
