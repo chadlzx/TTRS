@@ -55,12 +55,14 @@ namespace sjtu {
              *  }
              */
             friend class Bptree;
-
+            /*
+             *  Children array could be changed to deque ? which is much faster
+             */
             node *Children[IndexSize + 1], *father;
+
             std::deque<value_type> data;
-            int NumChild;
+            int NumChild, type;
             node *prev, *next;
-            int type;
 
             /*
              *  Insert value into a leaf page not considering it's full or not
@@ -87,13 +89,18 @@ namespace sjtu {
             void BinErase(Key key) {
                 int pos = BinSearch(key);
                 data.erase(data.begin() + pos);
-                if (pos == 0) {
+                if (pos == 0 && father != nullptr) {
                     pos = father->BinSearch(key);
-                    father->data[pos] = data[0];
+                    if(pos != -1) father->data[pos] = data[0];
                 }
                 NumChild--;
             }
-
+            /*
+             *  return which pos does key holds on data
+             *  if it's index page, it could be used as p->BinSearch(p->data.front());
+             *  if p is the first child, return -1;
+             *  or key does not exist
+             */
             int BinSearch(Key key) {
                 if (type) {
                     for (int i = 0; i < NumChild; i++) {
@@ -103,7 +110,21 @@ namespace sjtu {
                     for (int i = 0; i < NumChild - 1; i++) {
                         if (Equal(key, data[i].first)) return i;
                     }
+                    return -1;
                 }
+            }
+
+            void UpdateFather(int pos){
+                father->data[pos] = data.front();
+                return;
+            }
+
+            void DeleteChild(int pos){
+                data.erase(data.begin() + pos);
+                for (int i = pos + 1; i < NumChild - 1; i++) {
+                    Children[i] = Children[i + 1];
+                }
+                NumChild--;
             }
 
             node(int t, node *f = nullptr, node *p = nullptr, node *n = nullptr) :
@@ -170,7 +191,7 @@ namespace sjtu {
          *  there're 3 cases in total
          */
         bool insert(const value_type &value) {
-            if (root != nullptr) PrintNode(root);
+            //if (root != nullptr) PrintNode(root);
             CurrentLen++;
             /*
              *  Insert first element
@@ -228,7 +249,14 @@ namespace sjtu {
          *  Consider Fillfactor = LeafSize/2 or IndexSize/2
          */
         node *erase(const Key key) {
+            if (CurrentLen == 0) throw(container_is_empty());
             node *p = Search(key);
+            if (p == nullptr) throw(invalid_iterator());
+            CurrentLen--;
+            if (p == root) {
+                p->BinErase(key);
+                return p;
+            }
             if (p->NumChild - 1 >= PageSize / 2) {
                 /*
                  * Case 1: LeafPageSize > FillFactor;
@@ -237,22 +265,45 @@ namespace sjtu {
                 p->BinErase(key);
                 return p;
             } else {
-                if (p->father->NumChild > IndexSize / 2) {
+                if (p->father->NumChild - 1 > IndexSize / 2) {
                     /*
                      *  Case 2: else if IndexPageSize > FillFactor;
                      *      Get data from brother if brother is larger then fillfactor
                      *      else Merge Leaf p and its brother
                      */
                     p->BinErase(key);
-                    LendOrMerge(p);
+                    LendMergeLeaf(p);
                 } else {
                     /*
-                     * Case 3: IndexPageSize& LeafPageSize <= FillFactor
+                     * Case 3: IndexPageSize & LeafPageSize <= FillFactor
                      *      Lend and merge recursively
                      */
+                    p->BinErase(key);
+                    if( !LendMergeLeaf(p) ) {
+                        if (p->father == root) {
+                            EraseRoot();
+                        } else {
+                            LendMergeIndex(p->father);
+                        }
+                    }
                 }
 
             }
+        }
+        /*
+         *  Used to Debug:
+         *  print all the inserted element from left to right
+         */
+        void Print(){
+            node * p = root;
+            while(p->type != 1) {
+                p = p->Children[0];
+            }
+            while(p != nullptr) {
+                PrintNode(p);
+                p = p->next;
+            }
+            std::cout << std::endl;
         }
 
 
@@ -286,7 +337,7 @@ namespace sjtu {
          *  SplitLeaf a max-size node p into 2 nodes
          *  and link them with their father (maintain index !)
          */
-        void SplitLeaf(node *&p) {
+        void SplitLeaf(node * p) {
             /*
              *  TODO Debug
              */
@@ -419,15 +470,18 @@ namespace sjtu {
          *  Case 1: prev is large enough, then take one data of prev to p;
          *  Case 2: next is large(if there is one), then do the same
          *  Case 3: both are not enough, merge prev and p;
+         *  if lend is successful return true;
+         *  else return false,
+         *  and we need to check if the tree is still balanced or p->father is root
          */
-        void LendOrMerge(node *p) {
+        bool LendMergeLeaf(node *p) {
             int sit = 0;
             if (p->prev != nullptr) {
-                if (p->prev->NumChild > PageSize) sit = 1;
+                if (p->prev->NumChild > PageSize / 2) sit = 1;
             }
             if (sit == 0){
                 if (p->next != nullptr) {
-                    if (p->next->NumChild > PageSize) sit = 2;
+                    if (p->next->NumChild > PageSize / 2) sit = 2;
                     else sit = 3;
                 }
             }
@@ -437,47 +491,128 @@ namespace sjtu {
                     p->BinInsert(pre->data.back());
                     pre->data.pop_back();
                     pre->NumChild--;
-                    break;
+                    return true;
                 }
                 case 2: {
                     node * nxt = p->next;
                     p->BinInsert(nxt->data.front());
+                    int pos = nxt->father->BinSearch(nxt->data.front().first);
                     nxt->data.pop_front();
+                    nxt->UpdateFather(pos);
                     nxt->NumChild--;
-                    break;
+                    return true;
                 }
                 case 3: {
                     if (p->prev != nullptr) MergeLeafPage(p->prev);
                     else MergeLeafPage(p);
-                    break;
+                    return false;
                 }
             }
         }
         /*
-         *  Merge p and p->next
+         *  Merge leaf page p and p->next
          *  and update p->father->data as well as p->father->Children
          */
         void MergeLeafPage(node *p){
             node * nxt = p->next;
             node * fa = p->father;
             for (int i = p->NumChild; i < p->NumChild + nxt->NumChild; i++){
-                p->Children[i] = nxt->Children[i-p->NumChild];
+                p->data.push_back(nxt->data[i - p->NumChild]);
             }
             p->NumChild += nxt->NumChild;
+            int pos = fa->BinSearch(nxt->data.front().first);
+            fa->DeleteChild(pos);
+            p->next = nullptr;
+            if (nxt->next != nullptr) {
+                p->next = nxt->next;
+                nxt->next->prev = p;
+            }
+            delete nxt;
+        }
+        /*
+         *  Most of the time, just lend from brother
+         *  else merge node p with brother
+         *  Case 0: Merge
+         *  Case 1: Lend from left brother
+         *  Case 2: Lend from right brother
+         */
+        void LendMergeIndex(node * p) {
+            node * fa = p->father;
+            int sit = 0;
+            int pos = fa->BinSearch(p->data.front());
+            if (pos - 1 >= 0) {
+                if (fa->Children[pos - 1]->NumChild - 1 > IndexSize / 2) sit = 1;
+            }
+            if (!sit) {
+                if (pos + 1 < fa->NumChild - 1) {
+                    if (fa->Children[pos + 1]->NumChild - 1 > IndexSize / 2) sit = 2;
+                }
+            }
+            switch (sit){
+                case 0: {
+                    if (p->next != nullptr) MergeIndexPage(p);
+                    else MergeIndexPage(p->prev);
+                    break;
+                }
+                case 1: {
+                    node * brother = fa->Children[pos - 1];
+                    node * grandson = p->Children[0]->prev;
+                    grandson->father = p;
+                    for (int i = 1; i < p->NumChild; i++) {
+
+                    }
+                    p->Children[0] = grandson;
+                    p->data.push_front(grandson->data.front());
+                    brother->data.pop_back();
+                    brother->NumChild--;
+                    p->Children++;
+                    int pos_p = fa->BinSearch(grandson);
+                    break;
+                }
+                case 2: {
+                    node * brother = fa->Children[pos + 1];
+                    node * grandson = brother->Children[0];
+                    grandson->father = p;
+                    p->Children[p->NumChild] = grandson;
+                    p->NumChild++;
+                    p->data.push_back(grandson->data.front());
+                    brother->data.pop_front();
+                    for (int i = 0; i < brother->NumChild - 1; i++) {
+                        brother->Children[i] = brother->Children[i + 1];
+                    }
+                    brother->NumChild--;
+                    int pos_p = fa->BinSearch(grandson->data.front());
+                    fa->data[pos_p] = grandson->next->data.front();
+                    break;
+                }
+            }
+        }
+
+        /*
+         *  p & p->next are both Indexsize / 2
+         *  Merge them and update the value f their father.
+         */
+        void MergeIndexPage(node * p){
+            node * nxt = p->next;
+            node * fa = p->father;
             fa->NumChild--;
 
-            p->next = nxt->next; //consider null?
-            nxt->next->prev = p;
+        }
 
-            delete nxt;
+        void EraseRoot(){
+            node * p = root->Children[0];
+            p->father = nullptr;
+
+            delete root;
+            root = p;
         }
 
         void PrintNode(node *p) {
-            std::cout << CurrentLen << ": ";
-            for (int i = 0; i < p->NumChild - 1; i++) {
+            //std::cout << CurrentLen << ": ";
+            for (int i = 0; i < p->NumChild; i++) {
                 std::cout << p->data[i].first << " ";
             }
-            std::cout << "\n";
+            //std::cout << "\n";
         }
     };
 
