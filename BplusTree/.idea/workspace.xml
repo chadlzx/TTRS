@@ -15,7 +15,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Bptree.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/Bptree.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/BplusTree" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/BplusTree" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/BplusTree.dir/test.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/BplusTree.dir/test.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/BplusTree.dir/test.cpp.o" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/test.cpp" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
@@ -43,24 +43,33 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="336">
-              <caret line="18" column="14" selection-start-line="18" selection-start-column="14" selection-end-line="18" selection-end-column="14" />
+            <state relative-caret-position="443">
+              <caret line="24" column="7" lean-forward="true" selection-start-line="24" selection-start-column="7" selection-end-line="24" selection-end-column="7" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Bptree.hpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="294">
-              <caret line="65" column="12" selection-start-line="65" selection-start-column="12" selection-end-line="65" selection-end-column="12" />
+            <state relative-caret-position="65">
+              <caret line="371" column="21" selection-start-line="371" selection-start-column="13" selection-end-line="371" selection-end-column="21" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
                 <element signature="e#374#529#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file:///usr/include/c++/8/ext/new_allocator.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="118">
+              <caret line="135" selection-start-line="135" selection-end-line="135" />
             </state>
           </provider>
         </entry>
@@ -98,6 +107,9 @@
       <find>BinSearch</find>
       <find>UpdateFather</find>
       <find>LendOrMerge</find>
+      <find>splitLeaf</find>
+      <find>spliti</find>
+      <find>splitind</find>
     </findStrings>
     <replaceStrings>
       <replace>PageSize</replace>
@@ -114,8 +126,8 @@
         <option value="$PROJECT_DIR$/utility.hpp" />
         <option value="$PROJECT_DIR$/debug.cpp" />
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/test.cpp" />
         <option value="$PROJECT_DIR$/Bptree.hpp" />
+        <option value="$PROJECT_DIR$/test.cpp" />
       </list>
     </option>
   </component>
@@ -131,7 +143,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -143,6 +154,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -198,12 +210,14 @@
       <workItem from="1557315804033" duration="3208000" />
       <workItem from="1557446629338" duration="12729000" />
       <workItem from="1557641959089" duration="217000" />
-      <workItem from="1557658901617" duration="18388000" />
+      <workItem from="1557658901617" duration="19945000" />
+      <workItem from="1557792022560" duration="618000" />
+      <workItem from="1557792655081" duration="11480000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="68868000" />
+    <option name="totallyTimeSpent" value="82523000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -216,19 +230,18 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="28" width="1600" height="872" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Favorites" order="0" sideWeight="0.7241867" side_tool="true" weight="0.18082368" />
-      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.27652174" visible="true" weight="0.18082368" />
-      <window_info id="Structure" order="2" sideWeight="0.72347826" side_tool="true" visible="true" weight="0.18082368" />
-      <window_info anchor="bottom" id="Terminal" order="0" weight="0.13386881" />
+      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.27443105" visible="true" weight="0.18597169" />
+      <window_info id="Structure" order="2" sideWeight="0.72556895" side_tool="true" visible="true" weight="0.18597169" />
+      <window_info anchor="bottom" id="Terminal" order="0" weight="0.2904953" />
       <window_info anchor="bottom" id="Event Log" order="1" side_tool="true" />
       <window_info anchor="bottom" id="Database Changes" order="2" />
-      <window_info anchor="bottom" id="Version Control" order="3" weight="0.3292683" />
+      <window_info anchor="bottom" id="Version Control" order="3" weight="0.32797858" />
       <window_info anchor="bottom" id="Message" order="4" />
-      <window_info anchor="bottom" id="Find" order="5" weight="0.37884873" />
-      <window_info anchor="bottom" id="Run" order="6" weight="0.32931727" />
-      <window_info active="true" anchor="bottom" id="Debug" order="7" visible="true" weight="0.23025435" />
+      <window_info anchor="bottom" id="Find" order="5" weight="0.123159304" />
+      <window_info anchor="bottom" id="Run" order="6" weight="0.4497992" />
+      <window_info anchor="bottom" id="Debug" order="7" weight="0.4966533" />
       <window_info anchor="bottom" id="CMake" order="8" weight="0.3292683" />
       <window_info anchor="bottom" id="Cvs" order="9" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="10" weight="0.4" />
@@ -291,11 +304,21 @@
           <line>28</line>
           <option name="timeStamp" value="16" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <condition expression="key == 5" language="ObjectiveC" />
+        <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/Bptree.hpp</url>
-          <line>252</line>
-          <option name="timeStamp" value="26" />
+          <line>551</line>
+          <option name="timeStamp" value="27" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <condition expression="i == 5" language="ObjectiveC" />
+          <url>file://$PROJECT_DIR$/test.cpp</url>
+          <line>22</line>
+          <option name="timeStamp" value="30" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Bptree.hpp</url>
+          <line>562</line>
+          <option name="timeStamp" value="31" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -303,17 +326,32 @@
   <component name="debuggerHistoryManager">
     <expressions id="breakpointCondition">
       <expression>
+        <expression-string>i == 5</expression-string>
+        <language-id>ObjectiveC</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>i == 12</expression-string>
+        <language-id>ObjectiveC</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>i == 13</expression-string>
+        <language-id>ObjectiveC</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>key == 7</expression-string>
+        <language-id>ObjectiveC</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
         <expression-string>key == 5</expression-string>
         <language-id>ObjectiveC</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
         <expression-string>key == 8</expression-string>
-        <language-id>ObjectiveC</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>key == 7</expression-string>
         <language-id>ObjectiveC</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -371,6 +409,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file:///usr/include/c++/8/bits/stl_pair.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="125">
+          <caret line="382" selection-start-line="382" selection-end-line="382" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -391,35 +436,35 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///usr/include/c++/8/bits/stl_pair.h">
+    <entry file="file:///usr/include/c++/8/bits/stl_deque.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="125">
-          <caret line="382" selection-start-line="382" selection-end-line="382" />
+        <state relative-caret-position="166">
+          <caret line="1054" selection-start-line="1054" selection-end-line="1054" />
         </state>
       </provider>
     </entry>
     <entry file="file:///usr/include/c++/8/ext/new_allocator.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="131">
-          <caret line="124" selection-start-line="124" selection-end-line="124" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="336">
-          <caret line="18" column="14" selection-start-line="18" selection-start-column="14" selection-end-line="18" selection-end-column="14" />
+        <state relative-caret-position="118">
+          <caret line="135" selection-start-line="135" selection-end-line="135" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Bptree.hpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="65" column="12" selection-start-line="65" selection-start-column="12" selection-end-line="65" selection-end-column="12" />
+        <state relative-caret-position="65">
+          <caret line="371" column="21" selection-start-line="371" selection-start-column="13" selection-end-line="371" selection-end-column="21" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
             <element signature="e#374#529#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="443">
+          <caret line="24" column="7" lean-forward="true" selection-start-line="24" selection-start-column="7" selection-end-line="24" selection-end-column="7" />
         </state>
       </provider>
     </entry>
