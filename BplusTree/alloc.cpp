@@ -1,4 +1,5 @@
-#include "alloc.h"
+#include "./alloc.h"
+#include "./exceptions.hpp"
 
 void file_alloc::del_node(node * p)
 {
@@ -76,7 +77,9 @@ void file_alloc::load(const char * filename)
 	}
 	fclose(fp);
 }
-
+/*
+ *  Save file, put the start&end of all the node into file
+ */
 void file_alloc::dump(const char * filename)
 {
 	FILE *fp = fopen(filename, "wb");
@@ -96,7 +99,9 @@ inline bool file_alloc::empty()
 {
 	return head == nullptr;
 }
-
+/*
+ *  delete all the node
+ */
 void file_alloc::clear()
 {
 	file_end = 0;

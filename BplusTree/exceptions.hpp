@@ -1,3 +1,25 @@
+
+#pragma once
+class exception {
+
+};
+
+class unallocated_space : public exception {
+};
+
+class non_existent_file : public exception {
+};
+
+class invalid_format : public exception {
+};
+
+class invalid_offset : public exception {
+};
+
+class not_found : public exception {
+};
+
+
 #ifndef SJTU_EXCEPTIONS_HPP
 #define SJTU_EXCEPTIONS_HPP
 
@@ -7,37 +29,41 @@
 
 namespace sjtu {
 
-class exception {
-protected:
-	const std::string variant = "";
-	std::string detail = "";
-public:
-	exception() {}
-	exception(const exception &ec) : variant(ec.variant), detail(ec.detail) {}
-	virtual std::string what() {
-		return variant + " " + detail;
-	}
-};
+    class exception {
+    protected:
+        const std::string variant = "";
+        std::string detail = "";
+    public:
+        exception() {}
+
+        exception(const exception &ec) : variant(ec.variant), detail(ec.detail) {}
+
+        virtual std::string what() {
+            return variant + " " + detail;
+        }
+    };
 
 /**
  * TODO
  * Please complete them.
  */
-class index_out_of_bound : public exception {
-	/* __________________________ */
-};
+    class index_out_of_bound : public exception {
+        /* __________________________ */
+    };
 
-class runtime_error : public exception {
-	/* __________________________ */
-};
+    class runtime_error : public exception {
+        /* __________________________ */
+    };
 
-class invalid_iterator : public exception {
-	/* __________________________ */
-};
+    class invalid_iterator : public exception {
+        /* __________________________ */
+    };
 
-class container_is_empty : public exception {
-	/* __________________________ */
-};
+    class container_is_empty : public exception {
+        /* __________________________ */
+    };
+
+
 }
 
 #endif

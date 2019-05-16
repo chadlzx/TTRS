@@ -2,7 +2,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include "exceptions.h"
+#include "./exceptions.hpp"
 //A very simple try
 
 //typedef long off_t;
@@ -26,6 +26,7 @@ private:
 			printf("[block start:%d end:%d]",start,end);
 		}
 	};
+
 	node *head, *tail;
 	//char * filename;
 	//FILE * file;

@@ -1,0 +1,5 @@
+#/bin/sh
+./clean
+cmake ..
+make
+./BplusTree
