@@ -150,32 +150,32 @@ alloc.cpp.s:
 	$(MAKE) -f CMakeFiles/BplusTree.dir/build.make CMakeFiles/BplusTree.dir/alloc.cpp.s
 .PHONY : alloc.cpp.s
 
-debug.o: debug.cpp.o
+test.o: test.cpp.o
 
-.PHONY : debug.o
+.PHONY : test.o
 
 # target to build an object file
-debug.cpp.o:
-	$(MAKE) -f CMakeFiles/BplusTree.dir/build.make CMakeFiles/BplusTree.dir/debug.cpp.o
-.PHONY : debug.cpp.o
+test.cpp.o:
+	$(MAKE) -f CMakeFiles/BplusTree.dir/build.make CMakeFiles/BplusTree.dir/test.cpp.o
+.PHONY : test.cpp.o
 
-debug.i: debug.cpp.i
+test.i: test.cpp.i
 
-.PHONY : debug.i
+.PHONY : test.i
 
 # target to preprocess a source file
-debug.cpp.i:
-	$(MAKE) -f CMakeFiles/BplusTree.dir/build.make CMakeFiles/BplusTree.dir/debug.cpp.i
-.PHONY : debug.cpp.i
+test.cpp.i:
+	$(MAKE) -f CMakeFiles/BplusTree.dir/build.make CMakeFiles/BplusTree.dir/test.cpp.i
+.PHONY : test.cpp.i
 
-debug.s: debug.cpp.s
+test.s: test.cpp.s
 
-.PHONY : debug.s
+.PHONY : test.s
 
 # target to generate assembly for a file
-debug.cpp.s:
-	$(MAKE) -f CMakeFiles/BplusTree.dir/build.make CMakeFiles/BplusTree.dir/debug.cpp.s
-.PHONY : debug.cpp.s
+test.cpp.s:
+	$(MAKE) -f CMakeFiles/BplusTree.dir/build.make CMakeFiles/BplusTree.dir/test.cpp.s
+.PHONY : test.cpp.s
 
 # Help Target
 help:
@@ -189,9 +189,9 @@ help:
 	@echo "... alloc.o"
 	@echo "... alloc.i"
 	@echo "... alloc.s"
-	@echo "... debug.o"
-	@echo "... debug.i"
-	@echo "... debug.s"
+	@echo "... test.o"
+	@echo "... test.i"
+	@echo "... test.s"
 .PHONY : help
 
 

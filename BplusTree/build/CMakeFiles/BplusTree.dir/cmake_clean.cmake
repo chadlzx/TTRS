@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/BplusTree.dir/debug.cpp.o"
+  "CMakeFiles/BplusTree.dir/test.cpp.o"
   "CMakeFiles/BplusTree.dir/alloc.cpp.o"
   "BplusTree.pdb"
   "BplusTree"

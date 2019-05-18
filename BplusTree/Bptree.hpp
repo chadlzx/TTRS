@@ -25,7 +25,6 @@ namespace sjtu {
     class Bptree {
     public:
         class node;
-
         class block;
 
     private:

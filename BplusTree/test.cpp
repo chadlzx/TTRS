@@ -3,11 +3,15 @@
 using std::cout;
 
 
-
 int main(){
-	sjtu::bptree<int, int> a("train_record", "index_train_record");
-	a.init();
-
+    sjtu::Bptree<int, int> a("train_record");
+	int x;
+	if (a.size() <= 6) {
+	    a.insert(std::pair<int, int>(a.size() + 2, 2 * (a.size() + 2) ));
+	}
+	x = a.at(a.size() + 1);
+	cout << "Now bptree stores " << a.size() << " data\n";
+	cout << "the value at " << a.size() + 1 << " is " << x << "\n";
 
 
 

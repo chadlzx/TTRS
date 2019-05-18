@@ -5,5 +5,8 @@ CMakeFiles/BplusTree.dir/alloc.cpp.o: .././alloc.h
 CMakeFiles/BplusTree.dir/alloc.cpp.o: .././exceptions.hpp
 CMakeFiles/BplusTree.dir/alloc.cpp.o: ../alloc.cpp
 
-CMakeFiles/BplusTree.dir/debug.cpp.o: ../debug.cpp
+CMakeFiles/BplusTree.dir/test.cpp.o: .././exceptions.hpp
+CMakeFiles/BplusTree.dir/test.cpp.o: .././utility.hpp
+CMakeFiles/BplusTree.dir/test.cpp.o: ../NewBptree.hpp
+CMakeFiles/BplusTree.dir/test.cpp.o: ../test.cpp
 

@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <cstring>
 #include <fstream>
+#include <deque>
 using namespace std;
 constexpr off_t invalid_off = 0xdeadbeef;
 
@@ -89,9 +90,10 @@ public:
 
 
 int main(){
-    store a("train_record", "index_train_record");
-    a.insert(2);
-    cout << a.size();
+    deque<int > a;
+    cout << sizeof(deque<int>) << " " << sizeof(a) << " ";
+    for (int i = 1; i <= 100; i++) a.push_back(i);
+    cout << sizeof(a);
     return 0;
 }
 
