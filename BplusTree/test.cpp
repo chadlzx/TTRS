@@ -1,17 +1,35 @@
 #include <iostream>
+#include <ctime>
 #include "NewBptree.hpp"
 using std::cout;
 
 
 int main(){
+    srand(time(NULL));
     sjtu::Bptree<int, int> a("train_record");
 	int x;
-	if (a.size() <= 6) {
-	    a.insert(std::pair<int, int>(a.size() + 2, 2 * (a.size() + 2) ));
-	}
+	int TestNum = 15060;
+    if (a.size() < TestNum) {
+        for (int i = 3; i <= 3 + TestNum - 1 ; i++) {
+            a.insert(std::pair<int, int>(i, 2 * i));
+        }
+    }
+    else if (a.size() == TestNum){
+        a.insert(std::pair<int, int> (a.size()+3, 2*(a.size() + 3) ) );
+    }
+
 	x = a.at(a.size() + 1);
-	cout << "Now bptree stores " << a.size() << " data\n";
-	cout << "the value at " << a.size() + 1 << " is " << x << "\n";
+
+	cout << "Current length is " << a.size() << "\n";
+	int flag = 1;
+	if (flag) {
+	    // Query test
+	    cout << "Query test start: ";
+        for (int i = 1; i <= 100; i++) {
+            int id = rand() % (a.size()-20) + 10 ;
+            cout << "Query information for train id " << id << ": it is " << a.at(id) << "\n";
+        }
+	}
 
 
 

@@ -13,38 +13,12 @@
   <component name="ChangeListManager">
     <list default="true" id="54f550c6-83f5-4f89-aa5c-6b1dcf115877" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Bptree.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/Bptree.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/NewBptree.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/NewBptree.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/BplusTree" beforeDir="false" afterPath="$PROJECT_DIR$/build/BplusTree" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/CMakeFiles/BplusTree.dir/CXX.includecache" beforeDir="false" afterPath="$PROJECT_DIR$/build/CMakeFiles/BplusTree.dir/CXX.includecache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/CMakeFiles/BplusTree.dir/DependInfo.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/build/CMakeFiles/BplusTree.dir/DependInfo.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/CMakeFiles/BplusTree.dir/build.make" beforeDir="false" afterPath="$PROJECT_DIR$/build/CMakeFiles/BplusTree.dir/build.make" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/CMakeFiles/BplusTree.dir/cmake_clean.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/build/CMakeFiles/BplusTree.dir/cmake_clean.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/CMakeFiles/BplusTree.dir/debug.cpp.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/CMakeFiles/BplusTree.dir/depend.internal" beforeDir="false" afterPath="$PROJECT_DIR$/build/CMakeFiles/BplusTree.dir/depend.internal" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/CMakeFiles/BplusTree.dir/depend.make" beforeDir="false" afterPath="$PROJECT_DIR$/build/CMakeFiles/BplusTree.dir/depend.make" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/CMakeFiles/BplusTree.dir/link.txt" beforeDir="false" afterPath="$PROJECT_DIR$/build/CMakeFiles/BplusTree.dir/link.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/build/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/train_record" beforeDir="false" afterPath="$PROJECT_DIR$/build/train_record" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/BplusTree" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/BplusTree.cbp" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/BplusTree.cbp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/BplusTree.dir/CXX.includecache" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/BplusTree.dir/CXX.includecache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/BplusTree.dir/DependInfo.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/BplusTree.dir/DependInfo.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/BplusTree.dir/build.make" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/BplusTree.dir/build.make" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/BplusTree.dir/cmake_clean.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/BplusTree.dir/cmake_clean.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/BplusTree.dir/debug.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/BplusTree.dir/debug.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/BplusTree.dir/depend.internal" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/BplusTree.dir/depend.internal" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/BplusTree.dir/depend.make" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/BplusTree.dir/depend.make" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/BplusTree.dir/link.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/BplusTree.dir/link.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/BplusTree.dir/test.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/BplusTree.dir/test.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/demo" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/demo.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/demo1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/index_train_record" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/train_record" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/debug.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/debug.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/CMakeFiles/BplusTree.dir/test.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/build/CMakeFiles/BplusTree.dir/test.cpp.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/train_record" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/BplusTree" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/BplusTree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/BplusTree.dir/test.cpp.o" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/test.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/test.cpp" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
@@ -76,11 +50,11 @@
     <favorites_list name="BplusTree" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="242">
+            <state>
               <caret line="11" column="24" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="24" />
             </state>
           </provider>
@@ -89,8 +63,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="242">
-              <caret line="11" selection-start-line="11" selection-end-line="11" />
+            <state relative-caret-position="-152">
+              <caret line="10" column="22" selection-start-line="10" selection-start-column="22" selection-end-line="10" selection-end-column="22" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -101,8 +75,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Bptree.hpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="225" column="29" selection-start-line="225" selection-start-column="20" selection-end-line="225" selection-end-column="29" />
+            <state relative-caret-position="266">
+              <caret line="465" column="10" lean-forward="true" selection-start-line="465" selection-start-column="10" selection-end-line="465" selection-end-column="10" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
                 <element signature="e#374#529#0" expanded="true" />
@@ -114,7 +88,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/paragon.hpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
+            <state relative-caret-position="-18">
               <caret column="1" selection-start-column="1" selection-end-column="12" />
               <folding>
                 <element signature="e#146#233#0" expanded="true" />
@@ -126,7 +100,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/alloc.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2926">
+            <state>
               <caret line="134" column="17" selection-start-line="134" selection-start-column="17" selection-end-line="134" selection-end-column="17" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
@@ -138,7 +112,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/alloc.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="110">
+            <state>
               <caret line="8" selection-start-line="8" selection-end-line="8" selection-end-column="41" />
               <folding>
                 <element signature="e#13#30#0" expanded="true" />
@@ -150,8 +124,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/NewBptree.hpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="692">
-              <caret line="209" column="24" lean-forward="true" selection-start-line="209" selection-start-column="24" selection-end-line="209" selection-end-column="24" />
+            <state relative-caret-position="-3960">
+              <caret line="368" column="53" selection-start-line="368" selection-start-column="53" selection-end-line="368" selection-end-column="53" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
                 <element signature="e#473#628#0" expanded="true" />
@@ -163,7 +137,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/debug.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="625">
+            <state>
               <caret line="94" column="50" selection-start-line="94" selection-start-column="50" selection-end-line="94" selection-end-column="50" />
               <folding>
                 <element signature="e#39#58#0" expanded="true" />
@@ -176,11 +150,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>deq</find>
-      <find>info</find>
-      <find>find</find>
-      <find>close</find>
-      <find>throw</find>
       <find>new_n</find>
       <find>prev</find>
       <find>array_t</find>
@@ -200,12 +169,17 @@
       <find>tell</find>
       <find>NewLeafNode</find>
       <find>sizeof(root)</find>
-      <find>insert</find>
       <find>splitleaf</find>
       <find>data</find>
       <find>deque</find>
       <find>BinEra</find>
       <find>Search</find>
+      <find>Getbr</find>
+      <find>insert</find>
+      <find>next</find>
+      <find>SplitLeaf</find>
+      <find>MergeLeafPage</find>
+      <find>GetB</find>
     </findStrings>
     <replaceStrings>
       <replace>PageSize</replace>
@@ -230,16 +204,16 @@
         <option value="$PROJECT_DIR$/alloc.cpp" />
         <option value="$PROJECT_DIR$/Bptree.hpp" />
         <option value="$PROJECT_DIR$/debug.cpp" />
-        <option value="$PROJECT_DIR$/test.cpp" />
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/NewBptree.hpp" />
+        <option value="$PROJECT_DIR$/test.cpp" />
       </list>
     </option>
   </component>
   <component name="OCFindUsagesOptions" text="false" ivars="false" properties="true" derivedClasses="false" />
-  <component name="ProjectFrameBounds" extendedState="4">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="y" value="28" />
-    <option name="width" value="1885" />
+    <option name="width" value="1854" />
     <option name="height" value="1412" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -270,6 +244,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
   <component name="RunDashboard">
@@ -325,11 +300,12 @@
       <workItem from="1558056108486" duration="11578000" />
       <workItem from="1558104691448" duration="7630000" />
       <workItem from="1558180201739" duration="8908000" />
+      <workItem from="1558236230033" duration="17794000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="128806000" />
+    <option name="totallyTimeSpent" value="146600000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -341,24 +317,24 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="28" width="1885" height="1412" extended-state="4" />
+    <frame x="0" y="28" width="1600" height="872" extended-state="6" />
     <layout>
       <window_info id="Favorites" order="0" sideWeight="0.7241867" side_tool="true" weight="0.18082368" />
-      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.16783217" visible="true" weight="0.21479064" />
-      <window_info id="Structure" order="2" sideWeight="0.8321678" side_tool="true" visible="true" weight="0.21479064" />
+      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.16639742" visible="true" weight="0.18983269" />
+      <window_info id="Structure" order="2" sideWeight="0.8336026" side_tool="true" visible="true" weight="0.18983269" />
       <window_info anchor="bottom" id="Terminal" order="0" weight="0.023310022" />
       <window_info anchor="bottom" id="Event Log" order="1" sideWeight="0.5002719" side_tool="true" weight="0.26884228" />
       <window_info anchor="bottom" id="Database Changes" order="2" />
       <window_info anchor="bottom" id="Version Control" order="3" weight="0.32797858" />
       <window_info anchor="bottom" id="Message" order="4" />
       <window_info anchor="bottom" id="Find" order="5" weight="0.123159304" />
-      <window_info anchor="bottom" id="Run" order="6" sideWeight="0.4997281" weight="0.26884228" />
-      <window_info anchor="bottom" id="Debug" order="7" weight="0.2944833" />
+      <window_info active="true" anchor="bottom" id="Run" order="6" sideWeight="0.4997281" visible="true" weight="0.17135207" />
+      <window_info anchor="bottom" id="Debug" order="7" weight="0.44310576" />
       <window_info anchor="bottom" id="CMake" order="8" weight="0.32797858" />
       <window_info anchor="bottom" id="Cvs" order="9" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="10" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="11" weight="0.32797858" />
-      <window_info anchor="bottom" id="Messages" order="12" weight="0.36208236" />
+      <window_info anchor="bottom" id="Messages" order="12" weight="0.4364123" />
       <window_info anchor="right" id="Database" order="0" weight="0.32975337" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="1" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="2" weight="0.25" />
@@ -438,18 +414,38 @@
           <line>550</line>
           <option name="timeStamp" value="27" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+        <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/Bptree.hpp</url>
           <line>561</line>
           <option name="timeStamp" value="31" />
         </line-breakpoint>
+        <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/test.cpp</url>
+          <line>20</line>
+          <option name="timeStamp" value="48" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/NewBptree.hpp</url>
+          <line>253</line>
+          <option name="timeStamp" value="54" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/NewBptree.hpp</url>
+          <line>153</line>
+          <option name="timeStamp" value="56" />
+        </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/test.cpp</url>
-          <line>11</line>
-          <option name="timeStamp" value="48" />
+          <line>27</line>
+          <option name="timeStamp" value="57" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="CMakeRunConfiguration">
+        <watch expression="IndexSize / 2 + 1" language="ObjectiveC" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="breakpointCondition">
@@ -506,6 +502,11 @@
     </expressions>
     <expressions id="watch">
       <expression>
+        <expression-string>IndexSize / 2 + 1</expression-string>
+        <language-id>ObjectiveC</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
         <expression-string>sizeof(a)</expression-string>
         <language-id>ObjectiveC</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
@@ -547,11 +548,6 @@
       </expression>
       <expression>
         <expression-string>root-&gt;Children[1]</expression-string>
-        <language-id>ObjectiveC</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>root-&gt;Children[0]</expression-string>
         <language-id>ObjectiveC</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -644,19 +640,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/alloc.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="110">
-          <caret line="8" selection-start-line="8" selection-end-line="8" selection-end-column="41" />
-          <folding>
-            <element signature="e#13#30#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/alloc.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2926">
+        <state>
           <caret line="134" column="17" selection-start-line="134" selection-start-column="17" selection-end-line="134" selection-end-column="17" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
@@ -664,30 +650,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/paragon.hpp">
+    <entry file="file://$PROJECT_DIR$/alloc.h">
       <provider selected="true" editor-type-id="text-editor">
         <state>
-          <caret column="1" selection-start-column="1" selection-end-column="12" />
+          <caret line="8" selection-start-line="8" selection-end-line="8" selection-end-column="41" />
           <folding>
-            <element signature="e#146#233#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Bptree.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="225" column="29" selection-start-line="225" selection-start-column="20" selection-end-line="225" selection-end-column="29" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-            <element signature="e#374#529#0" expanded="true" />
+            <element signature="e#13#30#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/debug.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="625">
+        <state>
           <caret line="94" column="50" selection-start-line="94" selection-start-column="50" selection-end-line="94" selection-end-column="50" />
           <folding>
             <element signature="e#39#58#0" expanded="true" />
@@ -697,15 +672,36 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
+        <state>
           <caret line="11" column="24" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/paragon.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-18">
+          <caret column="1" selection-start-column="1" selection-end-column="12" />
+          <folding>
+            <element signature="e#146#233#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Bptree.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="266">
+          <caret line="465" column="10" lean-forward="true" selection-start-line="465" selection-start-column="10" selection-end-line="465" selection-end-column="10" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#374#529#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/NewBptree.hpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="692">
-          <caret line="209" column="24" lean-forward="true" selection-start-line="209" selection-start-column="24" selection-end-line="209" selection-end-column="24" />
+        <state relative-caret-position="-3960">
+          <caret line="368" column="53" selection-start-line="368" selection-start-column="53" selection-end-line="368" selection-end-column="53" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
             <element signature="e#473#628#0" expanded="true" />
@@ -715,8 +711,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="11" selection-start-line="11" selection-end-line="11" />
+        <state relative-caret-position="-152">
+          <caret line="10" column="22" selection-start-line="10" selection-start-column="22" selection-end-line="10" selection-end-column="22" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
