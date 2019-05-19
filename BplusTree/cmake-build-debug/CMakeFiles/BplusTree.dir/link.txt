@@ -1,1 +1,1 @@
-/usr/bin/c++  -g   CMakeFiles/BplusTree.dir/test.cpp.o  -o BplusTree 
+/usr/bin/c++  -g   CMakeFiles/BplusTree.dir/test.cpp.o CMakeFiles/BplusTree.dir/alloc.cpp.o  -o BplusTree 

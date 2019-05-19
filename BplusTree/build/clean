@@ -1,0 +1,2 @@
+#/bin/sh
+rm -rf demo.txt index_train_record train_record

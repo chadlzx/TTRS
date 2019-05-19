@@ -87,6 +87,15 @@
 		<Unit filename="/home/yujie6/Entertainment/TTRS/BplusTree/Bptree.hpp">
 			<Option target="BplusTree"/>
 		</Unit>
+		<Unit filename="/home/yujie6/Entertainment/TTRS/BplusTree/NewBptree.hpp">
+			<Option target="BplusTree"/>
+		</Unit>
+		<Unit filename="/home/yujie6/Entertainment/TTRS/BplusTree/alloc.cpp">
+			<Option target="BplusTree"/>
+		</Unit>
+		<Unit filename="/home/yujie6/Entertainment/TTRS/BplusTree/alloc.h">
+			<Option target="BplusTree"/>
+		</Unit>
 		<Unit filename="/home/yujie6/Entertainment/TTRS/BplusTree/exceptions.hpp">
 			<Option target="BplusTree"/>
 		</Unit>

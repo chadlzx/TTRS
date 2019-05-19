@@ -25,7 +25,6 @@ namespace sjtu {
     class Bptree {
     public:
         class node;
-
         class block;
 
     private:
@@ -280,11 +279,7 @@ namespace sjtu {
                      */
                     p->BinErase(key);
                     if( !LendMergeLeaf(p) ) {
-                        if (p->father == root) {
-                            EraseRoot();
-                        } else {
-                            LendMergeIndex(p->father);
-                        }
+                        LendMergeIndex(p->father);
                     }
                 }
 
@@ -382,8 +377,9 @@ namespace sjtu {
                 if (p->NumChild > IndexSize) {
                     node *brother = GetBrother(p);
                     p->NumChild = IndexSize / 2 + 1;
-                    p->father->data.push_back(p->data[IndexSize / 2]);
-                    p->father->Children[p->father->NumChild] = brother;
+                    p->data.pop_back();
+                    p->father->data.push_back(p->data[IndexSize / 2]); //push_back????
+                    p->father->Children[p->father->NumChild] = brother; //p->father->Numchild ????
                     brother->father = p->father;
                     p->father->NumChild++;
                     p = p->father;
@@ -428,6 +424,9 @@ namespace sjtu {
             brother->NumChild = IndexSize - IndexSize / 2;
             for (int i = IndexSize / 2 + 1; i < IndexSize; i++) {
                 brother->data.push_back(p->data[i]);
+            }
+            for (int i = IndexSize / 2 + 1; i < IndexSize; i++) {
+                p->data.pop_back();
             }
             return brother;
         }
@@ -537,24 +536,45 @@ namespace sjtu {
          *  Case 2: Lend from right brother
          */
         void LendMergeIndex(node * p) {
+            if (p == root) {
+                /*
+                 *  Special case: leaf page is right under root
+                 */
+                if (p->NumChild != 2) return;
+                else {
+                    if (p->Children[0]->NumChild == 2 && p->Children[1]->NumChild == 2){
+                        EraseRoot();
+                    }
+                }
+                return;
+            }
             node * fa = p->father;
             int sit = 0;
-            int pos = fa->BinSearch(p->data.front());
-            if (pos - 1 >= 0) {
-                if (fa->Children[pos - 1]->NumChild - 1 > IndexSize / 2) sit = 1;
+            int pos = fa->BinSearch(p->data.front().first);
+            if (pos >= 0) {
+                if (fa->Children[pos]->NumChild - 1 > IndexSize / 2) sit = 1;
             }
             if (!sit) {
                 if (pos + 1 < fa->NumChild - 1) {
-                    if (fa->Children[pos + 1]->NumChild - 1 > IndexSize / 2) sit = 2;
+                    if (fa->Children[pos + 2]->NumChild - 1 > IndexSize / 2) sit = 2;
                 }
             }
             switch (sit){
                 case 0: {
-                    if (p->next != nullptr) MergeIndexPage(p);
-                    else MergeIndexPage(p->prev);
+                    if (fa == root && fa->NumChild == 2) {
+                        EraseRoot(); return;
+                    }
+                    if (fa->Children[pos + 1] != nullptr) MergeIndexPage(p, pos);
+                    else MergeIndexPage(fa->Children[pos - 1], pos - 1);
+                    if (fa->NumChild < IndexSize / 2) {
+                        LendMergeIndex(fa);
+                    }
                     break;
                 }
                 case 1: {
+                    /*
+                     *  This case is not complete yet...
+                     */
                     node * brother = fa->Children[pos - 1];
                     node * grandson = p->Children[0]->prev;
                     grandson->father = p;
@@ -565,12 +585,15 @@ namespace sjtu {
                     p->data.push_front(grandson->data.front());
                     brother->data.pop_back();
                     brother->NumChild--;
-                    p->Children++;
-                    int pos_p = fa->BinSearch(grandson);
+                    p->NumChild--;
+                    int pos_p = fa->BinSearch(grandson->Children[0]->data.front().first);
                     break;
                 }
                 case 2: {
-                    node * brother = fa->Children[pos + 1];
+                    /*
+                     *  Lend from right brother
+                     */
+                    node * brother = fa->Children[pos + 2];
                     node * grandson = brother->Children[0];
                     grandson->father = p;
                     p->Children[p->NumChild] = grandson;
@@ -581,7 +604,7 @@ namespace sjtu {
                         brother->Children[i] = brother->Children[i + 1];
                     }
                     brother->NumChild--;
-                    int pos_p = fa->BinSearch(grandson->data.front());
+                    int pos_p = fa->BinSearch(grandson->data.front().first);
                     fa->data[pos_p] = grandson->next->data.front();
                     break;
                 }
@@ -592,17 +615,53 @@ namespace sjtu {
          *  p & p->next are both Indexsize / 2
          *  Merge them and update the value f their father.
          */
-        void MergeIndexPage(node * p){
-            node * nxt = p->next;
+        void MergeIndexPage(node * p, int pos){
             node * fa = p->father;
+            node * brother = fa->Children[pos + 2];
+            for (int i = p->NumChild; i < p->NumChild + brother->NumChild; i++) {
+                p->Children[i] = brother->Children[i - p->NumChild];
+                brother->Children[i - p->NumChild]->father = p;
+            }
+            p->data.push_back(fa->data[pos]);
+            for (int i = 0; i < brother->NumChild; i++) {
+                p->data.push_back(brother->data[i]);
+            }
+            fa->DeleteChild(pos);
+            p->NumChild += brother->NumChild;
             fa->NumChild--;
 
         }
-
+        /*
+         *  Root only has 2 children, and they are both less then IndexSize / 2
+         *  So we can merge them to a new root
+         *  And this is the only situation that a bptree's height becomes lower
+         */
         void EraseRoot(){
+            if (root->Children[0]->type == 1) {
+                node * p = root->Children[0];
+                node * bro = root->Children[1];
+                for (int i = 0; i < bro->NumChild; i++) {
+                    p->data.push_back(bro->data[i]);
+                }
+                p->NumChild += bro->NumChild;
+                delete root;
+                delete bro;
+                root = p;
+                return;
+            }
             node * p = root->Children[0];
+            node * brother = root ->Children[1];
             p->father = nullptr;
-
+            p->data.push_back(root->data.front());
+            for (int i = 0; i < brother->NumChild - 1; i++) {
+                p->data.push_back(brother->data[i]);
+            }
+            for (int i = p->NumChild; i < p->NumChild + brother->NumChild; i++) {
+                p->Children[i] = brother->Children[i - p->NumChild];
+                p->Children[i]->father = p;
+            }
+            p->NumChild += brother->NumChild;
+            delete brother;
             delete root;
             root = p;
         }
