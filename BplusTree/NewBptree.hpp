@@ -45,7 +45,7 @@ namespace sjtu {
         }
 
 
-        void read_info() {
+        inline void read_info() {
             file.seekg(0);
             if(root == nullptr) {
                 root = new node();
@@ -64,7 +64,7 @@ namespace sjtu {
             file.write(CAST(p), sizeof(node));
         }
 
-        void save_main() {
+        inline void save_main() {
             file.seekp(0);
             if(root != nullptr) file.write(CAST(root), sizeof(node));
             file.seekp(sizeof(node));
@@ -123,6 +123,37 @@ namespace sjtu {
             }
         }
 
+        void EraseRoot() {
+            node * child0 = Getnode(root->Children[0]);
+            if (child0->type == 1) {
+                node * bro = Getnode(root->Children[1] );
+                for (int i = 0; i < bro->NumChild; i++) {
+                    child0->data[child0->NumChild + i] = bro->data[i];
+                }
+                child0->NumChild += bro->NumChild;
+                delete root;
+                delete bro;
+                root = child0;
+                return;
+            }
+            node * bro = Getnode(root ->Children[1] );
+            child0->father = invalid_off;
+            //child0->data[child0->NumChild] = root->data[0];
+            //child0->data[child0->NumChild - 1] = root->data[0];
+
+            for (int i = child0->NumChild; i < child0->NumChild + bro->NumChild; i++) {
+                child0->Children[i] = bro->Children[i - child0->NumChild];
+                node * tmp = Getnode(child0->Children[i]);
+                child0->data[i - 1] = tmp->data[0];
+                tmp->father = child0->pos;
+                save_node(tmp);
+            }
+            child0->NumChild += bro->NumChild;
+            delete bro;
+            delete root;
+            root = child0;
+        }
+
         void SplitLeafRoot(node * p) {
             node * NewLeaf = NewNode(1);
             for (int i = PageSize / 2; i <= PageSize - 1; i++) {
@@ -143,7 +174,9 @@ namespace sjtu {
 
             p->next = NewLeaf->pos;
             NewLeaf->prev = p->pos; //TODO p->next->prev = NewLeaf
-
+            if (p->pos == tailLeaf) {
+                tailLeaf = NewLeaf->pos;
+            }
             save_node(NewLeaf);
             save_node(fa);
             save_node(p);
@@ -171,6 +204,7 @@ namespace sjtu {
             root = fa;
 
             //save_node(fa);
+            save_node(p);
             save_node(brother);
         }
 
@@ -220,13 +254,6 @@ namespace sjtu {
 
         void SplitLeaf (node * p, node * fa) {
             node * NewLeaf = NewNode(1);
-/*            node * fa = nullptr;
-            if (p->father == root->pos) {
-                fa = root;
-            }
-            else {
-                fa = Getnode(p->father);
-            }*/
             for (int i = PageSize / 2; i <= PageSize - 1; i++) {
                 NewLeaf->data[i- PageSize / 2] = p->data[i];
             }
@@ -254,14 +281,19 @@ namespace sjtu {
             /* TODO */
             fa->NumChild++;
             off_t PosNextp = p->next;
+            if (p->pos == tailLeaf) {
+                tailLeaf = NewLeaf->pos;
+            }
             p->next = NewLeaf->pos;
             NewLeaf->prev = p->pos;
+
             if (PosNextp != invalid_off) {
                 node * nextp = Getnode(PosNextp);
                 nextp->prev = NewLeaf->pos;
                 NewLeaf->next = nextp->pos;
                 save_node(nextp);
             }
+
             save_node(fa);
             save_node(p);
             save_node(NewLeaf);
@@ -280,52 +312,214 @@ namespace sjtu {
          *  else return false,
          *  and we need to check if the tree is still balanced or p->father is root
          */
-        bool LendMergeLeaf(node * p) {
-            /*int sit = 0;
-            if (p->prev != nullptr) {
-                if (p->prev->NumChild > PageSize / 2) sit = 1;
+        bool LendMergeLeaf(node * p, node * fa) {
+            int sit = 3;
+            node * pre, *nxt;
+            if (p->prev != invalid_off) {
+                pre = Getnode(p->prev);
+                if (pre->NumChild > PageSize / 2) sit = 1;
             }
-            if (sit == 0){
-                if (p->next != nullptr) {
-                    if (p->next->NumChild > PageSize / 2) sit = 2;
-                    else sit = 3;
+            if (sit == 3){
+                if (p->next != invalid_off) {
+                    nxt = Getnode(p->next);
+                    if (nxt->NumChild > PageSize / 2) sit = 2;
                 }
             }
             switch (sit) {
                 case 1: {
-                    node *pre = p->prev;
-                    p->BinInsert(pre->data.back());
-                    pre->data.pop_back();
+                    p->BinInsert(pre->data[pre->NumChild - 1] );
                     pre->NumChild--;
+                    save_node(pre);
+                    save_node(p);
                     return true;
                 }
                 case 2: {
-                    node * nxt = p->next;
-                    p->BinInsert(nxt->data.front());
-                    int pos = nxt->father->BinSearch(nxt->data.front().first);
-                    nxt->data.pop_front();
-                    nxt->UpdateFather(pos);
+                    p->BinInsert(nxt->data[0] );
+                    int pos = fa->BinSearch(nxt->data[0].first);
+                    for (int i = 0; i < nxt->NumChild - 1; i++) {
+                        nxt->data[i] = nxt->data[i+1];
+                    }
+                    fa->data[pos] = nxt->data[0];
                     nxt->NumChild--;
+                    save_node(nxt);
+                    save_node(p);
+                    save_node(fa);
                     return true;
                 }
                 case 3: {
-                    if (p->prev != nullptr) MergeLeafPage(p->prev);
-                    else MergeLeafPage(p);
+                    int pos_p = fa->PosSearch(p->pos);
+                    if (p->next != invalid_off && pos_p != fa->NumChild - 1) MergeLeafPage(p, nxt, fa);
+                    else MergeLeafPage(pre, p, fa);
                     return false;
                 }
-            }*/
+            }
         }
 
+        /*
+         *  Most of the time, just lend from brother
+         *  else merge node p with brother
+         *  Case 0: Merge
+         *  Case 1: Lend from left brother
+         *  Case 2: Lend from right brother
+         */
         void LendMergeIndex(node * p) {
+            if (p == root) {
+                /*
+                 *  Special case: leaf page is right under root
+                 */
+                if (p->NumChild != 2) return;
+                else {
+                    node * child0 = Getnode(p->Children[0]);
+                    node * child1 = Getnode(p->Children[1]);
+                    if (child0->NumChild == IndexSize / 2 && child1->NumChild == IndexSize / 2){
+                        EraseRoot();
+                    }
+                }
+                return;
+            }
+            node * fa = Father(p);
+            node * brother = nullptr;
+            int sit = 0;
+            //int pos = fa->BinSearch(p->data.front().first);
+            int pos = fa->PosSearch(p->pos);
+            if (pos >= 1) {
+                brother = Getnode(fa->Children[pos - 1]);
+                if (brother->NumChild - 1 > IndexSize / 2) sit = 1;
+            }
+            if (!sit) {
+                if (pos + 1 < fa->NumChild) {
+                    brother = Getnode(fa->Children[pos + 1]);
+                    if (brother->NumChild - 1 > IndexSize / 2) sit = 2;
+                }
+            }
+            switch (sit){
+                case 0: {
+                    if (fa == root && fa->NumChild == 2) {
+                        EraseRoot(); return;
+                    }
+                    if (pos + 1 < fa->NumChild) MergeIndexPage(p, fa,pos);
+                    else {
+                        node * lbro = Getnode(fa->Children[pos - 1]);
+                        MergeIndexPage(lbro, fa, pos - 1);
+                    }
 
+                    if (fa->NumChild <= IndexSize / 2) { // fa->NumChild <= IndexSize / 2 ??
+                        LendMergeIndex(fa);
+                    }
+                    break;
+                }
+                case 1: {
+                    /*
+                     *  Lend from left brother
+                     */
+                    node * grandson = Getnode(brother->Children[brother->NumChild - 1] );
+                    grandson->father = p->pos;
+                    for (int i = p->NumChild; i >= 1; i--) {
+                        p->Children[i] = p->Children[i-1];
+                    }
+                    p->Children[0] = grandson->pos;
+                    for (int i = p->NumChild -1; i >= 1; i--) {
+                        p->data[i] = p->data[i-1];
+                    }
+                    p->data[0] = grandson->data[0];
+                    brother->NumChild--;
+                    p->NumChild++;
+                    fa->data[pos-1] = p->data[0];
+                    //int pos_p = fa->BinSearch(grandson->Children[0]->data.front().first);
+                    save_node(grandson);
+                    save_node(p);
+                    save_node(fa);
+                    break;
+                }
+                case 2: {
+                    /*
+                     *  Lend from right brother
+                     */
+                    node * grandson = Getnode(brother->Children[0] );
+                    grandson->father = p->pos;
+                    p->Children[p->NumChild] = grandson->pos;
+                    p->NumChild++;
+                    p->data[p->NumChild - 1] = grandson->data[0];
+                    //p->data.push_back(grandson->data.front());
+                    //brother->data.pop_front();
+                    for (int i = 0; i < brother->NumChild - 2; i++) {
+                        brother->data[i] = brother->data[i + 1];
+                    }
+                    for (int i = 0; i < brother->NumChild - 1; i++) {
+                        brother->Children[i] = brother->Children[i + 1];
+                    }
+                    brother->NumChild--;
+                    fa->data[pos] = brother->data[0];
+                    //int pos_p = fa->BinSearch(grandson->data.front().first);
+                    //fa->data[pos_p] = grandson->next->data.front();
+
+                    save_node(p);
+                    save_node(brother);
+                    save_node(fa);
+                    break;
+                }
+            }
         }
 
-        void MergeLeafPage (node * p) {
-
+        void MergeLeafPage (node * p, node * nxt, node * fa) {
+            for (int i = p->NumChild; i < p->NumChild + nxt->NumChild; i++){
+                p->data[i] = nxt->data[i - p->NumChild];
+            }
+            p->NumChild += nxt->NumChild;
+            int pos = fa->PosSearch(nxt->pos);
+            for (int i = pos; i < fa->NumChild; i++) {
+                fa->Children[i] = fa->Children[i+1];
+            }
+            for (int i = pos-1; i < fa->NumChild - 2; i++) {
+                fa->data[i] = fa->data[i+1];
+            }
+            fa->NumChild--;
+            //p->next = invalid_off;
+            if (nxt->next != invalid_off) {
+                p->next = nxt->next;
+                node * nnt = Getnode(nxt->next);
+                nnt->prev = p->pos;
+                save_node(nnt);
+            }
+            else {
+                if (tailLeaf == nxt->pos) tailLeaf = p->pos;
+            }
+            save_node(p);
+            //save_node(nxt);
+            save_node(fa);
+            delete nxt;
         }
 
-        void MergeIndexPage(node * p) {
-
+        /*
+         * Merge index p with it's right brother
+         */
+        void MergeIndexPage(node * p, node * fa, int pos_p) {
+            node * brother = Getnode(fa->Children[pos_p + 1]);
+            for (int i = p->NumChild; i < p->NumChild + brother->NumChild; i++) {
+                p->Children[i] = brother->Children[i - p->NumChild];
+                node * tmp = Getnode(p->Children[i]);
+                tmp->father = p->pos;
+                p->data[i - 1] = tmp->data[0];
+                save_node(tmp);
+                delete tmp;
+            }
+            p->NumChild += brother->NumChild;
+            for (int i = pos_p + 1; i < fa->NumChild - 1; i++) {
+                fa->Children[i] = fa->Children[i + 1 ];
+                //fa->data[i - 1] = fa->data[i]; // TODO check correctness
+            }
+            for (int i = pos_p; i < fa->NumChild - 2; i++) {
+                fa->data[i] = fa->data[i+1];
+            }
+            fa->NumChild--;
+            save_node(p);
+            save_node(fa);
+            /*
+            for (int i = 0; i < brother->NumChild; i++) {
+                p->data.push_back(brother->data[i]);
+            }
+            fa->DeleteChild(pos);
+            */
         }
 
     public:
@@ -335,7 +529,6 @@ namespace sjtu {
         public:
             int NumChild, type;
             off_t father, pos;
-            int sizeofnode;
             off_t prev, next;
             value_type data[PageSize + 1];
             off_t Children[IndexSize + 1];
@@ -345,6 +538,14 @@ namespace sjtu {
                 pos = invalid_off;
                 prev = invalid_off;
                 next = invalid_off;
+            }
+
+            bool Fewer(Key a, Key b, Compare C = Compare()) {
+                return C(a, b);
+            }
+
+            bool Equal(Key a, Key b) {
+                return !(Fewer(a, b) || Fewer(b, a));
             }
 
             void BinInsert(value_type value) {
@@ -359,9 +560,35 @@ namespace sjtu {
                 }
             }
 
-            void BinErase(int pos) {
-                for (int i = pos; i < NumChild; i++) {
-                    data[i] = data[i+1];
+            void BinErase(Key key) {
+                int pos;
+                for (int i = 0; i <= NumChild; i++) {
+                    if (data[i].first == key) {
+                        pos = i; break;
+                    }
+                }
+                for (int i = pos; i < NumChild - 1; i++) {
+                    data[i] = data[i + 1];
+                }
+                NumChild--;
+            }
+
+            int BinSearch(Key key) {
+                if (type) {
+                    for (int i = 0; i < NumChild; i++) {
+                        if (Equal(key, data[i].first)) return i;
+                    }
+                } else {
+                    for (int i = 0; i < NumChild - 1; i++) {
+                        if (Equal(key, data[i].first)) return i;
+                    }
+                    return -1;
+                }
+            }
+
+            int PosSearch(off_t pos) {
+                for (int i = 0; i < NumChild; i++) {
+                    if (Children[i] == pos) return i;
                 }
             }
 
@@ -370,6 +597,16 @@ namespace sjtu {
                 for (int i = 0; i < NumChild; i++) {
                     std::cout << "Information for id " << data[i].first << " is " << data[i].second << "\n";
                 }
+            }
+
+            void DeleteChild(int pos){
+                for (int i = pos; i < NumChild - 2; i++) {
+                    data[i] = data[i+1];
+                }
+                for (int i = pos + 1; i < NumChild - 1; i++) {
+                    Children[i] = Children[i + 1];
+                }
+                NumChild--;
             }
         };
         /*
@@ -473,6 +710,8 @@ namespace sjtu {
                 newleaf->data[0] = value;
                 save_node(newleaf);
                 root = newleaf;
+                tailLeaf = root->pos;
+                headLeaf = root->pos;
                 return;
             }
 
@@ -540,34 +779,45 @@ namespace sjtu {
             node * p = Search(key);
             if (p == nullptr) throw(invalid_iterator());
             CurrentLen--;
+            std::cout << "Deleting train id " << key << "...\n";
             if (p == root) {
                 p->BinErase(key);
+                save_node(p);
                 return p;
             }
+
+            node * fa = Father(p); // TODO : the problem is that fa might be changed...
             if (p->NumChild - 1 >= PageSize / 2) {
                 /*
                  * Case 1: LeafPageSize > FillFactor;
-                 *      Just erase (and update data of Indexpage)
+                 *      Just erase directly(and update data of Indexpage)
                  */
                 p->BinErase(key);
+                int pos_p = fa->PosSearch(p->pos);
+                if (pos_p == 0) {
+                    fa->data[pos_p - 1] = p->data[0];
+                    save_node(fa);
+                }
+                save_node(p);
                 return p;
             } else {
-                if (p->father->NumChild - 1 > IndexSize / 2) {
+                if (fa->NumChild - 1 > IndexSize / 2) {
                     /*
                      *  Case 2: else if IndexPageSize > FillFactor;
                      *      Get data from brother if brother is larger then fillfactor
                      *      else Merge Leaf p and its brother
                      */
                     p->BinErase(key);
-                    LendMergeLeaf(p);
+                    LendMergeLeaf(p, fa);
                 } else {
                     /*
                      * Case 3: IndexPageSize & LeafPageSize <= FillFactor
                      *      Lend and merge recursively
                      */
                     p->BinErase(key);
-                    if( !LendMergeLeaf(p) ) {
-                        LendMergeIndex(p->father);
+                    //save_node(p);
+                    if ( !LendMergeLeaf(p, fa) ) {
+                        LendMergeIndex(fa);
                     }
                 }
 
@@ -585,6 +835,13 @@ namespace sjtu {
             }
         }
         //void count(Key key) {};
+
+        void clear() {
+            char newcommand[40] = "rm ";
+            std::cout << "Removing files...\n";
+            strncpy(newcommand + 3, filename, strlen(filename) );
+            system(newcommand);
+        }
     };
 
 
