@@ -21,13 +21,14 @@ namespace sjtu {
     template<
             class Key,
             class T,
-            class Compare = std::less<Key>,
             int IndexSize = 5,
-            int PageSize = 5
+            int PageSize = 5,
+            class Compare = std::less<Key>
     >
     class Bptree {
     public:
         class node;
+        friend class iterator;
 
     private:
         off_t headLeaf, tailLeaf;
@@ -412,7 +413,7 @@ namespace sjtu {
                 }
                 case 1: {
                     /*
-                     *  Lend from left brother
+                     *  Lend from left brother TODO Debugging
                      */
                     node * grandson = Getnode(brother->Children[brother->NumChild - 1] );
                     grandson->father = p->pos;
@@ -613,6 +614,116 @@ namespace sjtu {
                 NumChild--;
             }
         };
+
+        class iterator{
+        friend class Bptree;
+
+        private:
+            Bptree * bp;
+            node * origin;
+            int place;
+
+        public:
+            iterator() {bp = nullptr; origin = nullptr; place = 0;}
+            iterator(node * p, Bptree * bp, int t): origin(p), bp(bp), place(t) {}
+
+            iterator(const iterator &other) {
+                origin = other.origin;
+                place = other.place;
+                bp = other.bp;
+            }
+
+            /*
+             *  iter++
+             */
+            iterator operator++(int) {
+                iterator ans(*this);
+                if (place == origin->NumChild - 1) {
+                    if (origin->pos == bp->tailLeaf) {
+                        place++;
+                        return ans;
+                    }
+                    origin = Getnode(origin->next);
+                    place = 0;
+                }
+                else {
+                    place++;
+                }
+
+                return ans;
+            }
+
+            /*
+             * ++iter
+             */
+            iterator & operator++() {
+                if (place == origin->NumChild - 1) {
+                    if (origin->pos == bp->tailLeaf) {
+                        place++;
+                        return *this;
+                    }
+                    origin = Getnode(origin->next);
+                    place = 0;
+                }
+                else {
+                    place++;
+                }
+                return *this;
+            }
+
+            /*
+             *  iter--
+             */
+            iterator operator--(int) {
+                iterator ans(*this);
+                if (place == 0) {
+                    if (origin->pos == bp->headLeaf) throw (invalid_iterator());
+                    origin = Getnode(origin->prev);
+                    place = origin->NumChild - 1;
+                }
+                else {
+                    place--;
+                }
+                return ans;
+            }
+
+            /*
+             *  --iter
+             */
+            iterator &operator--() {
+                if (place == 0) {
+                    if (origin->pos == bp->headLeaf) throw (invalid_iterator());
+                    origin = Getnode(origin->prev);
+                    place = origin->NumChild - 1;
+                }
+                else {
+                    place--;
+                }
+                return *this;
+            }
+
+            value_type operator*() const {
+                return origin->data[place];
+            }
+
+            bool operator==(const iterator &rhs) const {
+                return ( (origin->pos == rhs.origin->pos) && (place == rhs.place) );
+            }
+
+            bool operator!=(const iterator &rhs) const {
+                return ( (origin->pos != rhs.origin->pos) || (place != rhs.place) );
+            }
+
+            node * Getnode(off_t p) {
+                if (p == invalid_off) throw(invalid_offset());
+                bp->file.seekg(p);
+                node * target = new node();
+                bp->file.read(CAST(target), sizeof(node));
+                return target;
+            }
+
+        };
+
         /*
          * TODO: Improve to 2  classes
          */
@@ -666,15 +777,78 @@ namespace sjtu {
             return CurrentLen;
         }
 
+        bool empty() const {
+            return (CurrentLen == 0);
+        }
+
         T at(const Key &key) {
             if (CurrentLen == 0) throw (container_is_empty());
-            node * p = Search(key);
-            for (int i = 0; i < p->NumChild; i++) {
+            node *p = Search(key);
+            while (p->pos != headLeaf) {
+                if (p->data[0].first == key) {
+                    node *tmp = Getnode(p->prev);
+                    delete p;
+                    p = tmp;
+                } else {
+                    break;
+                }
+            }
+            if (p->data[p->NumChild - 1].first != key) {
+                node *tmp = Getnode(p->next);
+                if (tmp->data[0].first == key) return tmp->data[0].second;
+                throw (runtime_error());
+            }
+            for (int i = 0; i <= p->NumChild; i++) {
                 if (p->data[i].first == key) {
                     return p->data[i].second;
                 }
             }
-            throw (runtime_error());
+        }
+
+        T &operator[] (const Key &key) {
+            return at(key);
+        }
+
+        /*
+         *  Return the iterator point to the first value-type whose id is key.
+         */
+        iterator find(const Key key) {
+            if (CurrentLen == 0) throw (container_is_empty());
+            node * p = Search(key);
+            while (p->pos != headLeaf) {
+                if (p->data[0].first == key) {
+                    node *tmp = Getnode(p->prev);
+                    delete p;
+                    p = tmp;
+                } else {
+                    break;
+                }
+            }
+            if (p->data[p->NumChild - 1].first != key) {
+                node *tmp = Getnode(p->next);
+                if (tmp->data[0].first == key) return iterator(tmp, this, 0);
+                throw (runtime_error());
+            }
+            for (int i = 0; i <= p->NumChild; i++) {
+                if (p->data[i].first == key) {
+                    return iterator(p, this, i);
+                }
+            }
+            return end();
+            //throw (runtime_error());
+        }
+
+        iterator begin() {
+            if (CurrentLen == 0) throw(container_is_empty());
+            node * head = Getnode(headLeaf);
+            iterator ans(head ,this, 0);
+            return ans;
+        }
+
+        iterator end() {
+            node * end = Getnode(tailLeaf);
+            iterator ans(end, this, end->NumChild);
+            return ans;
         }
 
         node * Search(Key key) {
@@ -838,14 +1012,34 @@ namespace sjtu {
                 p = Getnode(p->next);
             }
         }
-        //void count(Key key) {};
 
+        /*
+         * Return how many data is following key
+         */
+        int count(Key key) {
+            iterator it;
+            it = find(key);
+            int sum = 0;
+            for (; it != end(); it++) {
+                if ( (*it).first != key ) {
+                    return sum;
+                }
+                sum++;
+            }
+            return sum;
+        }
+
+        /*
+         *
+         */
         void clear() {
             char newcommand[40] = "rm ";
             std::cout << "Removing files...\n";
             strncpy(newcommand + 3, filename, strlen(filename) );
             system(newcommand);
         }
+
+
     };
 
 
