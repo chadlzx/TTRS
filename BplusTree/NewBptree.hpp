@@ -339,6 +339,7 @@ namespace sjtu {
                     for (int i = 0; i < nxt->NumChild - 1; i++) {
                         nxt->data[i] = nxt->data[i+1];
                     }
+                    fa->data[pos - 1] = p->data[0];
                     fa->data[pos] = nxt->data[0];
                     nxt->NumChild--;
                     save_node(nxt);
@@ -348,6 +349,7 @@ namespace sjtu {
                 }
                 case 3: {
                     int pos_p = fa->PosSearch(p->pos);
+                    // pos_p != fa->Numchild is better
                     if (p->next != invalid_off && pos_p != fa->NumChild - 1) MergeLeafPage(p, nxt, fa);
                     else MergeLeafPage(pre, p, fa);
                     return false;
@@ -470,19 +472,21 @@ namespace sjtu {
             for (int i = pos; i < fa->NumChild; i++) {
                 fa->Children[i] = fa->Children[i+1];
             }
+            fa->data[pos - 2] = p->data[0];
             for (int i = pos-1; i < fa->NumChild - 2; i++) {
                 fa->data[i] = fa->data[i+1];
             }
             fa->NumChild--;
             //p->next = invalid_off;
-            if (nxt->next != invalid_off) {
+            if (tailLeaf == nxt->pos) {
+                tailLeaf = p->pos;
+                p->next = invalid_off;
+            }
+            else {
                 p->next = nxt->next;
                 node * nnt = Getnode(nxt->next);
                 nnt->prev = p->pos;
                 save_node(nnt);
-            }
-            else {
-                if (tailLeaf == nxt->pos) tailLeaf = p->pos;
             }
             save_node(p);
             //save_node(nxt);
@@ -794,7 +798,7 @@ namespace sjtu {
                  */
                 p->BinErase(key);
                 int pos_p = fa->PosSearch(p->pos);
-                if (pos_p == 0) {
+                if (fa->data[pos_p - 1] != p->data[0]) {
                     fa->data[pos_p - 1] = p->data[0];
                     save_node(fa);
                 }

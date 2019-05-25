@@ -17,13 +17,12 @@ int main(){
         for (int i = 3; i <= 3 + TestNum - 1 ; i++) {
             a.insert(std::pair<int, int>(i, 2 * i));
         }
-
-        for (int i = 15; i <= 21; i++) {
-            a.erase(i); //checking i = 5 now
-            a.tranverse();
-        }
     }
-    else if (a.size() == TestNum){
+    for (int i = 12; i <= 15; i++) {
+        a.erase(i); //checking i = 5 now
+        a.tranverse();
+    }
+    if (a.size() == TestNum){
         int flag2 = 0;
         if (flag2) {
             /*
@@ -39,9 +38,6 @@ int main(){
                 a.tranverse();
             }
         }
-    }
-    else {
-        a.clear();
     }
 
 	//x = a.at(19);
