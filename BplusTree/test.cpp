@@ -5,7 +5,19 @@
 
 using std::cout;
 
-sjtu::Bptree<int, int> a("train_record");
+sjtu::Bptree<int, int, 5, 5> a("train_record");
+
+void QueryTest();
+
+void BigDataTest() {
+    // 300000 with defult pagesize = 5 takes 9.81 seconds
+    // 240000 with pagesize = 4096 takes about 13.06 seconds
+    for (int i = 1; i <= 240000; i++) {
+        a.insert(std::pair<int, int>(i, 2*i));
+    }
+    cout << "Query information for train id " << 100005 << ": it is " << a.at(100005) << "\n";
+    //QueryTest();
+}
 
 void RobustTest() {
     int TestNum = 100;
@@ -24,7 +36,7 @@ void RobustTest() {
 
 void QueryTest() {
     cout << "Query test start: ";
-    for (int i = 1; i <= 100; i++) {
+    for (int i = 1; i <= 10000; i++) {
         int id = rand() % (a.size() - 20) + 10;
         cout << "Query information for train id " << id << ": it is " << a.at(id) << "\n";
     }
@@ -55,7 +67,7 @@ void Map() {
 }
 
 void IteratorTest() {
-    sjtu::Bptree<int, int>::iterator it = a.begin();
+    auto it = a.begin();
     for (; it != a.end(); it++) {
         cout << "Query information for train id " << (*it).first << ": it is " << (*it).second << "\n";
     }
@@ -71,8 +83,8 @@ void CountTest() {
 int main() {
     srand(time(NULL));
     clock_t start = clock();
-
-    RobustTest();
+    BigDataTest();
+    //RobustTest();
     //RepeatIDTest();
     //CountTest();
     //IteratorTest();
