@@ -5,7 +5,7 @@
 
 using std::cout;
 
-sjtu::Bptree<int, int, 5, 5> a("train_record");
+sjtu::Bptree<int, int, 101, 101> a("train_record");
 
 void QueryTest();
 
@@ -81,7 +81,7 @@ void CountTest() {
 
 void FileTest() {
     if (a.size() == 0) {
-        int TestNum = 10;
+        int TestNum = 1000;
         if (a.size() < TestNum) {
             for (int i = 3; i <= 3 + TestNum - 1; i++) {
                 a.insert(std::pair<int, int>(i, 2 * i));
@@ -89,9 +89,12 @@ void FileTest() {
         }
     }
     else {
-        a.erase( a.size() + 2 );
-        for (int i = 3; i <= 3 + a.size() - 1; i++) {
-            cout << "Query information for train id " << i << ": it is " << a.at(i) << "\n";
+        for (int j = 1; j <= 30; j++) {
+            a.erase(a.size() + 2);
+            for (int i = 3; i <= 3 + a.size() - 1; i++) {
+                auto it = a.find(i);
+                cout << "Query information for train id " << it->first << ": it is " << it->second << "\n";
+            }
         }
     }
 }

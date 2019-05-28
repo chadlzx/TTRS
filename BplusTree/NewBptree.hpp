@@ -844,8 +844,10 @@ namespace sjtu {
         iterator find(const Key key) {
             if (CurrentLen == 0) throw (container_is_empty());
             node *p = Search(key);
+            int flag = 1;
             while (p->pos != headLeaf) {
                 if (p->data[0].first == key) {
+                    flag = 0;
                     node *tmp = Getnode(p->prev);
                     delete p;
                     p = tmp;
@@ -853,18 +855,27 @@ namespace sjtu {
                     break;
                 }
             }
-            if (p->data[p->NumChild - 1].first != key) {
-                node *tmp = Getnode(p->next);
-                if (tmp->data[0].first == key) return iterator(tmp, this, 0);
-                //throw (runtime_error());
-            }
-            for (int i = 0; i <= p->NumChild; i++) {
-                if (p->data[i].first == key) {
-                    return iterator(p, this, i);
+            if (flag) {
+                for (int i = 0; i < p->NumChild; i++) {
+                    if (p->data[i].first == key) {
+                        return iterator(p, this, i);
+                    }
+                }
+                throw(runtime_error());
+            } else {
+                if (p->data[p->NumChild - 1].first != key) {
+                    node *tmp = Getnode(p->next);
+                    if (tmp->data[0].first == key) return iterator(tmp, this, 0);
+                }
+                else {
+                    for (int i = 0; i < p->NumChild; i++) {
+                        if (p->data[i].first == key) {
+                            return iterator(p, this, i);
+                        }
+                    }
+                    throw(runtime_error());
                 }
             }
-            return end();
-            //throw (runtime_error());
         }
 
         iterator begin() {
@@ -915,8 +926,8 @@ namespace sjtu {
                 newleaf->NumChild++;
                 newleaf->data[0] = value;
                 save_node(newleaf);
-                tailLeaf = root->pos;
-                headLeaf = root->pos;
+                tailLeaf = newleaf->pos;
+                headLeaf = newleaf->pos;
                 root = newleaf;
                 return;
             }
@@ -1004,7 +1015,7 @@ namespace sjtu {
                  */
                 p->BinErase(key);
                 int pos_p = fa->PosSearch(p->pos);
-                if (fa->data[pos_p - 1] != p->data[0]) {
+                if (fa->data[pos_p - 1].first != p->data[0].first) {
                     fa->data[pos_p - 1] = p->data[0];
                     save_node(fa);
                 }

@@ -16,6 +16,7 @@
       <change beforePath="$PROJECT_DIR$/NewBptree.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/NewBptree.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/BplusTree" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/BplusTree" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/BplusTree.dir/test.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/BplusTree.dir/test.cpp.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/train_record" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/test.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/test.cpp" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
@@ -60,8 +61,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="126">
-              <caret line="115" column="16" lean-forward="true" selection-start-line="115" selection-start-column="16" selection-end-line="115" selection-end-column="16" />
+            <state relative-caret-position="266">
+              <caret line="14" column="39" lean-forward="true" selection-start-line="14" selection-start-column="39" selection-end-line="14" selection-end-column="39" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -121,8 +122,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/NewBptree.hpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="121">
-              <caret line="337" column="32" lean-forward="true" selection-start-line="337" selection-start-column="32" selection-end-line="337" selection-end-column="32" />
+            <state relative-caret-position="255">
+              <caret line="1019" column="34" lean-forward="true" selection-start-line="1019" selection-start-column="34" selection-end-line="1019" selection-end-column="34" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
                 <element signature="e#473#628#0" expanded="true" />
@@ -135,9 +136,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>insert</find>
-      <find>Upda</find>
-      <find>void insert</find>
       <find>erase</find>
       <find>BinSea</find>
       <find>LendMergeLeaf</find>
@@ -165,6 +163,9 @@
       <find>-&gt;pos = 0</find>
       <find>SplitLeaf</find>
       <find>at(K</find>
+      <find>find(</find>
+      <find>insert</find>
+      <find>fa-&gt;data[pos</find>
     </findStrings>
     <replaceStrings>
       <replace>PageSize</replace>
@@ -298,12 +299,12 @@
       <workItem from="1558748155623" duration="803000" />
       <workItem from="1558749104409" duration="3000000" />
       <workItem from="1558759045222" duration="13813000" />
-      <workItem from="1559001891555" duration="8380000" />
+      <workItem from="1559001891555" duration="9560000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="206054000" />
+    <option name="totallyTimeSpent" value="207234000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -316,24 +317,23 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="28" width="1600" height="872" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Favorites" order="0" sideWeight="0.7241867" side_tool="true" weight="0.18082368" />
-      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.39642859" visible="true" weight="0.1988417" />
-      <window_info id="Structure" order="2" sideWeight="0.6035714" side_tool="true" visible="true" weight="0.1988417" />
-      <window_info anchor="bottom" id="Terminal" order="0" weight="0.29331514" />
+      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.3976834" visible="true" weight="0.1988417" />
+      <window_info id="Structure" order="2" sideWeight="0.6023166" side_tool="true" visible="true" weight="0.1988417" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="0" visible="true" weight="0.29331514" />
       <window_info anchor="bottom" id="Event Log" order="1" sideWeight="0.5006435" side_tool="true" weight="0.18072289" />
       <window_info anchor="bottom" id="Database Changes" order="2" />
       <window_info anchor="bottom" id="Version Control" order="3" weight="0.32742155" />
       <window_info anchor="bottom" id="Message" order="4" />
       <window_info anchor="bottom" id="Find" order="5" weight="0.123159304" />
-      <window_info anchor="bottom" id="Run" order="6" sideWeight="0.4993565" weight="0.54706687" />
-      <window_info anchor="bottom" id="Debug" order="7" weight="0.5102319" />
+      <window_info anchor="bottom" id="Run" order="6" sideWeight="0.4993565" weight="0.4542974" />
+      <window_info anchor="bottom" id="Debug" order="7" weight="0.30832195" />
       <window_info anchor="bottom" id="CMake" order="8" weight="0.32797858" />
       <window_info anchor="bottom" id="Cvs" order="9" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="10" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="11" weight="0.32742155" />
-      <window_info active="true" anchor="bottom" id="Messages" order="12" visible="true" weight="0.23601638" />
+      <window_info anchor="bottom" id="Messages" order="12" weight="0.23601638" />
       <window_info anchor="bottom" id="Tail" order="13" />
       <window_info anchor="right" id="Database" order="0" weight="0.32924882" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="1" type="SLIDING" weight="0.4" />
@@ -421,7 +421,7 @@
         </line-breakpoint>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/test.cpp</url>
-          <line>103</line>
+          <line>106</line>
           <option name="timeStamp" value="48" />
         </line-breakpoint>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
@@ -441,7 +441,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/NewBptree.hpp</url>
-          <line>983</line>
+          <line>994</line>
           <option name="timeStamp" value="71" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
@@ -724,8 +724,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="115" column="16" lean-forward="true" selection-start-line="115" selection-start-column="16" selection-end-line="115" selection-end-column="16" />
+        <state relative-caret-position="266">
+          <caret line="14" column="39" lean-forward="true" selection-start-line="14" selection-start-column="39" selection-end-line="14" selection-end-column="39" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
@@ -734,8 +734,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/NewBptree.hpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="121">
-          <caret line="337" column="32" lean-forward="true" selection-start-line="337" selection-start-column="32" selection-end-line="337" selection-end-column="32" />
+        <state relative-caret-position="255">
+          <caret line="1019" column="34" lean-forward="true" selection-start-line="1019" selection-start-column="34" selection-end-line="1019" selection-end-column="34" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
             <element signature="e#473#628#0" expanded="true" />
