@@ -20,18 +20,18 @@ void BigDataTest() {
 }
 
 void RobustTest() {
-    int TestNum = 100;
+    int TestNum = 10;
     if (a.size() < TestNum) {
         for (int i = 3; i <= 3 + TestNum - 1; i++) {
             a.insert(std::pair<int, int>(i, 2 * i));
         }
     }
-    for (int i = 12; i <= 69; i++) {
+    for (int i = 12; i >= 3; i--) {
         a.erase(i);
         a.tranverse();
     }
-    a.erase(70);
-    a.tranverse();
+    //a.erase(70);
+    //a.tranverse();
 }
 
 void QueryTest() {
@@ -69,7 +69,7 @@ void Map() {
 void IteratorTest() {
     auto it = a.begin();
     for (; it != a.end(); it++) {
-        cout << "Query information for train id " << (*it).first << ": it is " << (*it).second << "\n";
+        cout << "Query information for train id " << it->first << ": it is " << it->second << "\n";
     }
 }
 
@@ -79,21 +79,40 @@ void CountTest() {
     }
 }
 
+void FileTest() {
+    if (a.size() == 0) {
+        int TestNum = 10;
+        if (a.size() < TestNum) {
+            for (int i = 3; i <= 3 + TestNum - 1; i++) {
+                a.insert(std::pair<int, int>(i, 2 * i));
+            }
+        }
+    }
+    else {
+        a.erase( a.size() + 2 );
+        for (int i = 3; i <= 3 + a.size() - 1; i++) {
+            cout << "Query information for train id " << i << ": it is " << a.at(i) << "\n";
+        }
+    }
+}
+
 
 int main() {
     srand(time(NULL));
     clock_t start = clock();
-    BigDataTest();
+    //BigDataTest();
     //RobustTest();
     //RepeatIDTest();
     //CountTest();
     //IteratorTest();
     //QueryTest();
+    FileTest();
+
 
     cout << "Current length is " << a.size() << "\n";
     clock_t end = clock();
     cout << (double) (end - start) / (CLOCKS_PER_SEC) << "\n";
 
-    a.clear();
+    //a.clear();
     return 0;
 }
