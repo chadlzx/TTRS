@@ -21,8 +21,8 @@ namespace sjtu {
     template<
             class Key,
             class T,
-            int IndexSize = 5,
-            int PageSize = 5,
+            int IndexSize = 101,
+            int PageSize = 101,
             class Compare = std::less<Key>
     >
     class Bptree {
@@ -611,7 +611,7 @@ namespace sjtu {
             void PrintLeafNode() {
                 if (type != 1) throw (invalid_format());
                 for (int i = 0; i < NumChild; i++) {
-                    std::cout << "Information for id " << data[i].first << " is " << data[i].second << "\n";
+                    //std::cout << "Information for id " << data[i].first << " is " << data[i].second << "\n";
                 }
             }
 
@@ -767,18 +767,18 @@ namespace sjtu {
 
             file.open(fname, std::fstream::out | std::fstream::in | std::fstream::binary);
             if (!file) {
-                std::cout << "file not exist...\n";
+                //std::cout << "file not exist...\n";
                 CurrentLen = 0;
                 file.open(fname, std::fstream::out | std::fstream::binary);
-                std::cout << "new file <" << fname << "> has been added to dir\n";
+                //std::cout << "new file <" << fname << "> has been added to dir\n";
                 file.close();
                 file.open(fname);
                 save_main();
             } else {
-                std::cout << "File exist...\n";
-                std::cout << "Reading file...\n";
+                //std::cout << "File exist...\n";
+               // std::cout << "Reading file...\n";
                 read_info();
-                std::cout << "Initializing, we get " << CurrentLen << " data-pair currently." << "\n";
+                //std::cout << "Initializing, we get " << CurrentLen << " data-pair currently." << "\n";
             }
         }
 
@@ -842,7 +842,7 @@ namespace sjtu {
          *  Return the iterator point to the first value-type whose id is key.
          */
         iterator find(const Key key) {
-            if (CurrentLen == 0) throw (container_is_empty());
+            if (CurrentLen == 0) return end();
             node *p = Search(key);
             int flag = 1;
             while (p->pos != headLeaf) {
@@ -861,7 +861,7 @@ namespace sjtu {
                         return iterator(p, this, i);
                     }
                 }
-                throw(runtime_error());
+                return end();
             } else {
                 if (p->data[p->NumChild - 1].first != key) {
                     node *tmp = Getnode(p->next);
@@ -873,7 +873,7 @@ namespace sjtu {
                             return iterator(p, this, i);
                         }
                     }
-                    throw(runtime_error());
+                    return end();
                 }
             }
         }
@@ -919,8 +919,8 @@ namespace sjtu {
             /*
              *  Insert first element
              */
-            std::cout << "A new train is created, the train id is: " << value.first << ". ";
-            std::cout << "Train information is: " << value.second << "\n";
+           // std::cout << "A new train is created, the train id is: " << value.first << ". ";
+           // std::cout << "Train information is: " << value.second << "\n";
             if (CurrentLen == 1) {
                 node *newleaf = NewNode();
                 newleaf->NumChild++;
@@ -996,7 +996,7 @@ namespace sjtu {
             node *p = Search(key);
             if (p == nullptr) throw (invalid_iterator());
             CurrentLen--;
-            std::cout << "Deleting train id " << key << "...\n";
+           // std::cout << "Deleting train id " << key << "...\n";
             if (p == root) {
                 if (CurrentLen == 0) {
                     if (root != nullptr) delete root;
@@ -1047,8 +1047,8 @@ namespace sjtu {
 
 
         void tranverse() {
-            std::cout << "Tranversing information for all ids...\n";
-            if (CurrentLen == 0) std::cout << "Bptree is empty now...\n Try inserting some datas.\n";
+           // std::cout << "Tranversing information for all ids...\n";
+            if (CurrentLen == 0) ;//std::cout << "Bptree is empty now...\n Try inserting some datas.\n";
             else {
                 node *p = Getnode(headLeaf);
                 while (true) {
@@ -1064,7 +1064,12 @@ namespace sjtu {
          */
         int count(Key key) {
             iterator it;
-            it = find(key);
+            try{
+            	it = find(key);
+            }
+            catch(...){
+            	return 0;
+            }
             int sum = 0;
             for (; it != end(); it++) {
                 if ((*it).first != key) {
@@ -1080,7 +1085,7 @@ namespace sjtu {
          */
         void clear() {
             char newcommand[40] = "rm ";
-            std::cout << "Removing files...\n";
+          //  std::cout << "Removing files...\n";
             strncpy(newcommand + 3, filename, strlen(filename));
             system(newcommand);
         }
