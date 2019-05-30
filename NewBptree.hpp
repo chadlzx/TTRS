@@ -21,8 +21,8 @@ namespace sjtu {
     template<
             class Key,
             class T,
-            int IndexSize = 101,
-            int PageSize = 101,
+            int IndexSize = 51,
+            int PageSize = 51,
             class Compare = std::less<Key>
     >
     class Bptree {
