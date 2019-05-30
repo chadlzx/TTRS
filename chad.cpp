@@ -622,7 +622,7 @@ struct ticket{
 
 
 
-Bptree<int,user,4096/sizeof(user),4096/(sizeof(int)+4)> USER("user");//用户数据库
+Bptree<int,user,4096/sizeof(user),5> USER("user");//用户数据库
 
 /*
 
@@ -632,9 +632,9 @@ Bptree<int,user,4096/sizeof(user),4096/(sizeof(int)+4)> USER("user");//用户数
 
 
 
-Bptree<String<20>,train,4096/sizeof(train),4096/(sizeof(String<20>)+4)> TRAIN("train");//根据train_id排序
+Bptree<String<20>,train,4096/sizeof(train),5> TRAIN("train");//根据train_id排序
 
-Bptree<String<40>,String<20>,4096/sizeof(String<20>),4096/(sizeof(String<40>)+4) >  Train_Index("train_index");
+Bptree<String<40>,String<20>,4096/sizeof(String<20>),5 >  Train_Index("train_index");
 
 struct KEY2{
 
@@ -706,7 +706,7 @@ struct KEY2{
 
 };
 
-Bptree<KEY2,ticket,4096/sizeof(ticket),4096/(sizeof(KEY2)+4)> TICKET("ticket");
+Bptree<KEY2,ticket,4096/sizeof(ticket),5> TICKET("ticket");
 
 /*
 
@@ -1384,7 +1384,7 @@ String<40> loc2,String<12> data,String<40> ticket_kind)
 
 	
 
-	Bptree<KEY2,ticket,4096/sizeof(ticket),4096/(sizeof(KEY2)+4)>::iterator it;
+	Bptree<KEY2,ticket,4096/sizeof(ticket),5>::iterator it;
 
 	try{
 
