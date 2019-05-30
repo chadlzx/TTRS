@@ -90,6 +90,10 @@ namespace sjtu {
             return newleaf;
         }
 
+        void FuckNode(node *p) {
+            if (p != nullptr && p != root) delete p;
+        }
+
         node *Getnode(off_t p) {
             if (p == invalid_off) throw (invalid_offset());
             file.seekg(p);
@@ -150,6 +154,7 @@ namespace sjtu {
                 child0->data[i - 1] = tmp->data[0];
                 tmp->father = child0->pos;
                 save_node(tmp);
+                delete tmp;
             }
             child0->NumChild += bro->NumChild;
             delete bro;
@@ -158,7 +163,7 @@ namespace sjtu {
         }
 
         void SplitLeafRoot(node *p) {
-            node *NewLeaf = NewNode(1);
+            node * NewLeaf = NewNode(1);
             for (int i = PageSize / 2; i <= PageSize - 1; i++) {
                 NewLeaf->data[i - PageSize / 2] = p->data[i];
             }
@@ -167,7 +172,7 @@ namespace sjtu {
             }*/
             p->NumChild = PageSize / 2;
             NewLeaf->NumChild = PageSize - PageSize / 2;
-            node *fa = NewNode(0);
+            node * fa = NewNode(0);
             fa->NumChild = 2;
             fa->data[0] = NewLeaf->data[0];
             fa->Children[0] = p->pos;
@@ -179,12 +184,13 @@ namespace sjtu {
             NewLeaf->prev = p->pos; //TODO p->next->prev = NewLeaf
             headLeaf = p->pos;
             //if (p->pos == tailLeaf) {
-                tailLeaf = NewLeaf->pos;
+            tailLeaf = NewLeaf->pos;
             //}
             save_node(NewLeaf);
             save_node(fa);
             save_node(p);
             root = fa;
+            FuckNode(NewLeaf);
         }
 
         void SplitIndexRoot(node *p) {
@@ -210,6 +216,8 @@ namespace sjtu {
             //save_node(fa);
             save_node(p);
             save_node(brother);
+            FuckNode(p);
+            FuckNode(brother);
         }
 
         void SplitIndex(node *p) {
@@ -247,7 +255,9 @@ namespace sjtu {
                     save_node(brother);
                     save_node(fa);
                     save_node(p);
+                    delete p;
                     p = fa;
+                    FuckNode(brother);
                 } else break;
             }
             if (p == root && p->NumChild > IndexSize) {
@@ -296,11 +306,13 @@ namespace sjtu {
                 nextp->prev = NewLeaf->pos;
                 NewLeaf->next = nextp->pos;
                 save_node(nextp);
+                FuckNode(nextp);
             }
 
             save_node(fa);
             save_node(p);
             save_node(NewLeaf);
+            FuckNode(NewLeaf);
             /*for (int i = PageSize / 2; i <= PageSize - 1; i++) {
                 p->data.erase(p->data.begin() + i);
             }*/
@@ -318,7 +330,7 @@ namespace sjtu {
          */
         bool LendMergeLeaf(node *p, node *fa) {
             int sit = 3;
-            node *pre, *nxt;
+            node *pre = nullptr, *nxt = nullptr;
             if (p->prev != invalid_off) {
                 pre = Getnode(p->prev);
                 if (pre->NumChild > PageSize / 2) sit = 1;
@@ -335,6 +347,7 @@ namespace sjtu {
                     pre->NumChild--;
                     save_node(pre);
                     save_node(p);
+                    FuckNode(pre);
                     return true;
                 }
                 case 2: {
@@ -349,13 +362,20 @@ namespace sjtu {
                     save_node(nxt);
                     save_node(p);
                     save_node(fa);
+                    FuckNode(pre);
+                    FuckNode(nxt);
                     return true;
                 }
                 case 3: {
                     int pos_p = fa->PosSearch(p->pos);
                     // pos_p != fa->Numchild is better
-                    if (p->next != invalid_off && pos_p != fa->NumChild - 1) MergeLeafPage(p, nxt, fa);
-                    else MergeLeafPage(pre, p, fa);
+                    if (p->next != invalid_off && pos_p != fa->NumChild - 1) {
+                        MergeLeafPage(p, nxt, fa);
+                        FuckNode(pre);
+                    } else {
+                        MergeLeafPage(pre, p, fa);
+                        FuckNode(nxt);
+                    }
                     return false;
                 }
             }
@@ -386,6 +406,8 @@ namespace sjtu {
                     if (child0->NumChild == IndexSize / 2 && child1->NumChild == IndexSize / 2) {
                         EraseRoot();
                     }
+                    FuckNode(child0);
+                    FuckNode(child1);
                 }
                 return;
             }
@@ -408,16 +430,19 @@ namespace sjtu {
                 case 0: {
                     if (fa == root && fa->NumChild == 2) {
                         EraseRoot();
+                        FuckNode(fa);
                         return;
                     }
                     if (pos + 1 < fa->NumChild) MergeIndexPage(p, fa, pos);
                     else {
                         node *lbro = Getnode(fa->Children[pos - 1]);
                         MergeIndexPage(lbro, fa, pos - 1);
+                        //FuckNode(lbro);
                     }
 
                     if (fa->NumChild <= IndexSize / 2) { // fa->NumChild <= IndexSize / 2 ??
                         LendMergeIndex(fa);
+                        FuckNode(fa);
                     }
                     break;
                 }
@@ -442,6 +467,8 @@ namespace sjtu {
                     save_node(grandson);
                     save_node(p);
                     save_node(fa);
+                    FuckNode(fa);
+                    FuckNode(grandson);
                     break;
                 }
                 case 2: {
@@ -453,8 +480,6 @@ namespace sjtu {
                     p->Children[p->NumChild] = grandson->pos;
                     p->NumChild++;
                     p->data[p->NumChild - 1] = grandson->data[0];
-                    //p->data.push_back(grandson->data.front());
-                    //brother->data.pop_front();
                     for (int i = 0; i < brother->NumChild - 2; i++) {
                         brother->data[i] = brother->data[i + 1];
                     }
@@ -463,12 +488,11 @@ namespace sjtu {
                     }
                     brother->NumChild--;
                     fa->data[pos] = brother->data[0];
-                    //int pos_p = fa->BinSearch(grandson->data.front().first);
-                    //fa->data[pos_p] = grandson->next->data.front();
-
                     save_node(p);
                     save_node(brother);
                     save_node(fa);
+                    FuckNode(fa);
+                    FuckNode(brother);
                     break;
                 }
             }
@@ -499,9 +523,7 @@ namespace sjtu {
                 save_node(nnt);
             }
             save_node(p);
-            //save_node(nxt);
             save_node(fa);
-            delete nxt;
         }
 
         /*
@@ -528,6 +550,8 @@ namespace sjtu {
             fa->NumChild--;
             save_node(p);
             save_node(fa);
+            FuckNode(p);
+            FuckNode(fa);
             /*
             for (int i = 0; i < brother->NumChild; i++) {
                 p->data.push_back(brother->data[i]);
@@ -611,7 +635,7 @@ namespace sjtu {
             void PrintLeafNode() {
                 if (type != 1) throw (invalid_format());
                 for (int i = 0; i < NumChild; i++) {
-                    //std::cout << "Information for id " << data[i].first << " is " << data[i].second << "\n";
+                    std::cout << "Information for id " << data[i].first << " is " << data[i].second << "\n";
                 }
             }
 
@@ -659,7 +683,9 @@ namespace sjtu {
                         place++;
                         return ans;
                     }
-                    origin = Getnode(origin->next);
+                    int ps = origin->next;
+                    delete origin;
+                    origin = Getnode(ps);
                     place = 0;
                 } else {
                     place++;
@@ -677,7 +703,9 @@ namespace sjtu {
                         place++;
                         return *this;
                     }
-                    origin = Getnode(origin->next);
+                    int ps = origin->next;
+                    delete origin;
+                    origin = Getnode(ps);
                     place = 0;
                 } else {
                     place++;
@@ -692,7 +720,9 @@ namespace sjtu {
                 iterator ans(*this);
                 if (place == 0) {
                     if (origin->pos == bp->headLeaf) throw (invalid_iterator());
-                    origin = Getnode(origin->prev);
+                    int ps = origin->prev;
+                    delete origin;
+                    origin = Getnode(ps);
                     place = origin->NumChild - 1;
                 } else {
                     place--;
@@ -706,7 +736,9 @@ namespace sjtu {
             iterator &operator--() {
                 if (place == 0) {
                     if (origin->pos == bp->headLeaf) throw (invalid_iterator());
-                    origin = Getnode(origin->prev);
+                    int ps = origin->prev;
+                    delete origin;
+                    origin = Getnode(ps);
                     place = origin->NumChild - 1;
                 } else {
                     place--;
@@ -767,18 +799,18 @@ namespace sjtu {
 
             file.open(fname, std::fstream::out | std::fstream::in | std::fstream::binary);
             if (!file) {
-                //std::cout << "file not exist...\n";
+                std::cout << "file not exist...\n";
                 CurrentLen = 0;
                 file.open(fname, std::fstream::out | std::fstream::binary);
-                //std::cout << "new file <" << fname << "> has been added to dir\n";
+                std::cout << "new file <" << fname << "> has been added to dir\n";
                 file.close();
                 file.open(fname);
                 save_main();
             } else {
-                //std::cout << "File exist...\n";
-               // std::cout << "Reading file...\n";
+                std::cout << "File exist...\n";
+                std::cout << "Reading file...\n";
                 read_info();
-                //std::cout << "Initializing, we get " << CurrentLen << " data-pair currently." << "\n";
+                std::cout << "Initializing, we get " << CurrentLen << " data-pair currently." << "\n";
             }
         }
 
@@ -817,19 +849,18 @@ namespace sjtu {
                         return p->data[i].second;
                     }
                 }
-                throw(runtime_error());
+                throw (runtime_error());
             } else {
                 if (p->data[p->NumChild - 1].first != key) {
                     node *tmp = Getnode(p->next);
                     if (tmp->data[0].first == key) return tmp->data[0].second;
-                }
-                else {
+                } else {
                     for (int i = 0; i < p->NumChild; i++) {
                         if (p->data[i].first == key) {
                             return p->data[i].second;
                         }
                     }
-                    throw(runtime_error());
+                    throw (runtime_error());
                 }
             }
         }
@@ -842,7 +873,7 @@ namespace sjtu {
          *  Return the iterator point to the first value-type whose id is key.
          */
         iterator find(const Key key) {
-            if (CurrentLen == 0) return end();
+            if (CurrentLen == 0) throw (container_is_empty());
             node *p = Search(key);
             int flag = 1;
             while (p->pos != headLeaf) {
@@ -865,9 +896,9 @@ namespace sjtu {
             } else {
                 if (p->data[p->NumChild - 1].first != key) {
                     node *tmp = Getnode(p->next);
+                    delete p;
                     if (tmp->data[0].first == key) return iterator(tmp, this, 0);
-                }
-                else {
+                } else {
                     for (int i = 0; i < p->NumChild; i++) {
                         if (p->data[i].first == key) {
                             return iterator(p, this, i);
@@ -900,6 +931,7 @@ namespace sjtu {
                 for (int i = 0; i < p->NumChild - 1; i++) {
                     if (Fewer(key, p->data[i].first)) {
                         off_t nextp = p->Children[i];
+                        FuckNode(p);
                         p = Getnode(nextp);
                         flag = 1;
                         break;
@@ -907,6 +939,7 @@ namespace sjtu {
                 }
                 if (!flag) {
                     off_t nextp = p->Children[p->NumChild - 1];
+                    FuckNode(p);
                     p = Getnode(nextp);
                 }
             }
@@ -919,8 +952,8 @@ namespace sjtu {
             /*
              *  Insert first element
              */
-           // std::cout << "A new train is created, the train id is: " << value.first << ". ";
-           // std::cout << "Train information is: " << value.second << "\n";
+            std::cout << "A new train is created, the train id is: " << value.first << ". ";
+            std::cout << "Train information is: " << value.second << "\n";
             if (CurrentLen == 1) {
                 node *newleaf = NewNode();
                 newleaf->NumChild++;
@@ -932,7 +965,7 @@ namespace sjtu {
                 return;
             }
 
-            node *p = Search(value.first);
+            node * p = Search(value.first);
             /*
              *  Case 1: the leaf page isn't full yet
              *          insert directly
@@ -940,6 +973,7 @@ namespace sjtu {
             if (p->NumChild + 1 < PageSize) {
                 p->BinInsert(value);
                 save_node(p);
+                FuckNode(p);
                 return;
             } else {
                 /*
@@ -948,66 +982,55 @@ namespace sjtu {
                  *     SubCase 1: leaf page is root
                  *     SubCase 2: else
                  */
-                if (p->NumChild + 1 < PageSize) {
+                if (p == root) {
                     p->BinInsert(value);
+                    SplitLeafRoot(p);
+                    FuckNode(p);
                     return;
                 } else {
-                    /*
-                     *  Case 2: the leaf page is full
-                     *     But the index page above is not full
-                     *     SubCase 1: leaf page is root
-                     *     SubCase 2: else
-                     */
-
-                    if (p == root) {
+                    node *fa;
+                    if (p->father == root->pos) fa = root;
+                    else fa = Getnode(p->father);
+                    if (fa->NumChild < IndexSize) {
                         p->BinInsert(value);
-                        SplitLeafRoot(p);
+                        SplitLeaf(p, fa);
+                        /*
+                         *  TODO : if p->prev not full, then rotate p
+                         */
                         return;
                     } else {
-                        node *fa;
-                        if (p->father == root->pos) fa = root;
-                        else fa = Getnode(p->father);
-                        if (fa->NumChild < IndexSize) {
-                            p->BinInsert(value);
-                            SplitLeaf(p, fa);
-                            /*
-                             *  TODO : if p->prev not full, then rotate p
-                             */
-                            return;
-                        } else {
-                            /*
-                             *  Case 3: both the leaf page & the index page are full
-                             *      we should balance the tree recursively
-                             */
-                            p->BinInsert(value);
-                            SplitLeaf(p, fa);
-                            if (p->father == root->pos) SplitIndexRoot(fa);
-                            else SplitIndex(fa);
-                            return;
-                        }
+                        /*
+                         *  Case 3: both the leaf page & the index page are full
+                         *      we should balance the tree recursively
+                         */
+                        p->BinInsert(value);
+                        SplitLeaf(p, fa);
+                        if (p->father == root->pos) SplitIndexRoot(fa);
+                        else SplitIndex(fa);
+                        return;
                     }
-
                 }
             }
         }
 
-        node *erase(Key key) {
+        void erase(Key key) {
             if (CurrentLen == 0) throw (container_is_empty());
             node *p = Search(key);
             if (p == nullptr) throw (invalid_iterator());
             CurrentLen--;
-           // std::cout << "Deleting train id " << key << "...\n";
+            std::cout << "Deleting train id " << key << "...\n";
             if (p == root) {
                 if (CurrentLen == 0) {
                     if (root != nullptr) delete root;
-                    return nullptr;
+                    return;
                 }
                 p->BinErase(key);
                 save_node(p);
-                return p;
+                FuckNode(p);
+                return;
             }
 
-            node *fa = Father(p); // TODO : the problem is that fa might be changed...
+            node * fa = Father(p); // TODO : the problem is that fa might be changed...
             if (p->NumChild - 1 >= PageSize / 2) {
                 /*
                  * Case 1: LeafPageSize > FillFactor;
@@ -1020,7 +1043,9 @@ namespace sjtu {
                     save_node(fa);
                 }
                 save_node(p);
-                return p;
+                FuckNode(p);
+                FuckNode(fa);
+                return;
             } else {
                 if (fa->NumChild - 1 > IndexSize / 2) {
                     /*
@@ -1030,6 +1055,8 @@ namespace sjtu {
                      */
                     p->BinErase(key);
                     LendMergeLeaf(p, fa);
+                    FuckNode(p);
+                    FuckNode(fa);
                 } else {
                     /*
                      * Case 3: IndexPageSize & LeafPageSize <= FillFactor
@@ -1039,6 +1066,8 @@ namespace sjtu {
                     //save_node(p);
                     if (!LendMergeLeaf(p, fa)) {
                         LendMergeIndex(fa);
+                        FuckNode(p);
+                        FuckNode(fa);
                     }
                 }
 
@@ -1047,14 +1076,19 @@ namespace sjtu {
 
 
         void tranverse() {
-           // std::cout << "Tranversing information for all ids...\n";
-            if (CurrentLen == 0) ;//std::cout << "Bptree is empty now...\n Try inserting some datas.\n";
+            std::cout << "Tranversing information for all ids...\n";
+            if (CurrentLen == 0) std::cout << "Bptree is empty now...\n Try inserting some datas.\n";
             else {
                 node *p = Getnode(headLeaf);
                 while (true) {
                     p->PrintLeafNode();
-                    if (p->pos == tailLeaf) break;
-                    p = Getnode(p->next);
+                    if (p->pos == tailLeaf) {
+                        delete p;
+                        break;
+                    }
+                    int pos = p->next;
+                    delete p;
+                    p = Getnode(pos);
                 }
             }
         }
@@ -1064,12 +1098,7 @@ namespace sjtu {
          */
         int count(Key key) {
             iterator it;
-            try{
-            	it = find(key);
-            }
-            catch(...){
-            	return 0;
-            }
+            it = find(key);
             int sum = 0;
             for (; it != end(); it++) {
                 if ((*it).first != key) {
@@ -1085,7 +1114,7 @@ namespace sjtu {
          */
         void clear() {
             char newcommand[40] = "rm ";
-          //  std::cout << "Removing files...\n";
+            std::cout << "Removing files...\n";
             strncpy(newcommand + 3, filename, strlen(filename));
             system(newcommand);
         }
