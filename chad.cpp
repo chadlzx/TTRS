@@ -117,11 +117,7 @@ struct String{
 			int shi=((s[0]-'0')*10+s[1]-'0')*60;
 
 			int fen=((s[3]-'0')*10+s[4]-'0');
-
-			fen+=shi;
-
-			return fen;
-
+			fen+=shi;			return fen;
 		}
 
 		else return -1;
