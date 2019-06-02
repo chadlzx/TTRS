@@ -117,7 +117,11 @@ struct String{
 			int shi=((s[0]-'0')*10+s[1]-'0')*60;
 
 			int fen=((s[3]-'0')*10+s[4]-'0');
-			fen+=shi;			return fen;
+
+			fen+=shi;
+
+			return fen;
+
 		}
 
 		else return -1;
@@ -618,7 +622,7 @@ struct ticket{
 
 
 
-Bptree<int,user,3,3> USER("user");//用户数据库
+Bptree<int,user> USER("user");//用户数据库
 
 /*
 
@@ -628,9 +632,9 @@ Bptree<int,user,3,3> USER("user");//用户数据库
 
 
 
-Bptree<String<20>,train,3,3> TRAIN("train");//根据train_id排序
+Bptree<String<20>,train> TRAIN("train");//根据train_id排序
 
-Bptree<String<40>,String<20>,3,3 >  Train_Index("train_index");
+Bptree<String<40>,String<20> >  Train_Index("train_index");
 
 struct KEY2{
 
@@ -702,7 +706,7 @@ struct KEY2{
 
 };
 
-Bptree<KEY2,ticket,3,3> TICKET("ticket");
+Bptree<KEY2,ticket> TICKET("ticket");
 
 /*
 
@@ -714,7 +718,7 @@ Bptree<KEY2,ticket,3,3> TICKET("ticket");
 
 bool check(int id){
 
-	if(id<2019||id>USER.size()+2018)return 0;
+	if(id<2019||id>USER.size()+2017)return 0;
 
 	return 1;
 
@@ -736,7 +740,7 @@ void Register(String<40> name,String<20> password,String<20> email,String<20> ph
 
 	user now(name,password,email,phone);
 
-	now.id=USER.size()+2019;
+	now.id=USER.size()+2018;
 
 	if(now.id==2019)now.privilege=2;
 
@@ -901,11 +905,7 @@ Delete(char*) 删除ID所指向的train
 
 
 /*
-
 查询火车ID是否存在，bu存在返回0，存在返回1
-
-
-
 */
 
 bool check_trainID(String<20> ID){
@@ -1380,19 +1380,10 @@ String<40> loc2,String<12> data,String<40> ticket_kind)
 
 	
 
-	Bptree<KEY2,ticket,3,3>::iterator it;
+	Bptree<KEY2,ticket>::iterator it;
 
-	try{
 
 		it=TICKET.find(key);
-
-	}
-
-	catch(invalid_offset()){
-
-		it=TICKET.end();
-
-	}
 
 	if(it!=TICKET.end()&&(*it).first==key){
 
@@ -1623,15 +1614,25 @@ int main(){
 	char op[45];
 
 	if(TICKET.size()==0){
-
 		ticket t;
-
 		KEY2 key;
-
-		TICKET.insert(std::pair<KEY2,ticket>(key,t));
-
+		TICKET.insert(std::pair<KEY2,ticket>(key,t));\
 	}
-
+	if(Train_Index.size()==0){
+		String<40> key;
+		String<20> train_id;
+		Train_Index.insert(std::pair<String<40>,String<20> >(key,train_id));
+	}
+	if(TRAIN.size()==0){
+		train val;
+		String<20> train_id;
+		TRAIN.insert(std::pair<String<20>,train >(train_id,val));
+	}
+	if(USER.size()==0){
+		int k=0;
+		user val;
+		USER.insert(std::pair<int,user >(k,val));
+	}
 	while(true){
 
 		scanf("%s",op);
@@ -1825,39 +1826,20 @@ int main(){
 		}
 
 		if(p==sadd_train){
-
-			
-
 			scanf("%s",op);String<20> train_id(op);
-
 			scanf("%s",op);String<40> name(op);
-
 			scanf("%s",op);String<10> catalog(op);
-
 			int num_station;scanf("%d",&num_station);
-
 			int num_price;scanf("%d",&num_price);
-
 			String<40> name_price[6];
-
 			for(int i=0;i<num_price;i++){
-
 				scanf("%s",&op);
-
 				name_price[i]=op;
-
 			}
-
 			Station station[60];
-
 			for(int i=0;i<num_station;i++)station[i].input(num_price,name_price);
-
 			//station[0].arrive_time=station[0].start_time;
-
 			printf("%d\n",add_train(train_id,name,catalog,num_station,num_price,name_price,station));
-
-			
-
 			continue;
 
 		}
@@ -1967,7 +1949,7 @@ int main(){
 		}
 
 		if(p==sexit){
-
+			//cout<<sjtu::ans<<endl;
 			Exit();
 
 			continue;

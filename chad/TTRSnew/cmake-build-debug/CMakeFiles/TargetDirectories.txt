@@ -1,3 +1,0 @@
-/home/yujie6/Entertainment/TTRS/BplusTree/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/yujie6/Entertainment/TTRS/BplusTree/cmake-build-debug/CMakeFiles/BplusTree.dir
-/home/yujie6/Entertainment/TTRS/BplusTree/cmake-build-debug/CMakeFiles/edit_cache.dir

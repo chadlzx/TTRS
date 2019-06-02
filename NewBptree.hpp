@@ -85,7 +85,7 @@ namespace sjtu {
             return newleaf;
         }
 
-        void FuckNode(node* p) {
+        void FuckNode(node*& p) {
             if (p != nullptr && p != root) {
             	delete p;
             	p=nullptr;
@@ -130,6 +130,7 @@ namespace sjtu {
         }
 
         void EraseRoot() {
+        	
             node *child0 = Getnode(root->Children[0]);
             if (child0->type == 1) {
                 node *bro = Getnode(root->Children[1]);
@@ -137,13 +138,10 @@ namespace sjtu {
                     child0->data[child0->NumChild + i] = bro->data[i];
                 }
                 child0->NumChild += bro->NumChild;
-                node* tmp = root;
-				root = child0;
-				save_node(tmp);
-				save_node(bro);
-				FuckNode(tmp);
-                FuckNode(bro);
-                
+				delete root;
+				root=child0;
+				delete bro;
+				save_node(root);
                 return;
             }
             node *bro = Getnode(root->Children[1]);
@@ -151,19 +149,17 @@ namespace sjtu {
 
             for (int i = child0->NumChild; i < child0->NumChild + bro->NumChild; i++) {
                 child0->Children[i] = bro->Children[i - child0->NumChild];
-                node *tmp = Getnode(child0->Children[i]);
+                node *tmp = Getnode(bro->Children[i- child0->NumChild]);//cnm
                 child0->data[i - 1] = tmp->data[0];
                 tmp->father = child0->pos;
                 save_node(tmp);
-                FuckNode(tmp);
+                delete tmp;
             }
             child0->NumChild += bro->NumChild;
-            node* tmp=root;
-			root = child0;
-			save_node(tmp);
-			save_node(bro);
-			FuckNode(tmp);
-            FuckNode(bro);
+			save_node(child0);
+			delete bro;
+            delete root;
+            root = child0;
             
         }
 
@@ -332,7 +328,7 @@ namespace sjtu {
          *  else return false,
          *  and we need to check if the tree is still balanced or p->father is root
          */
-        bool LendMergeLeaf(node* p, node* fa) {
+        bool LendMergeLeaf(node*& p, node* fa) {
             int sit = 3;
             node *pre = nullptr, *nxt = nullptr;
             if (p->prev != invalid_off) {
@@ -343,6 +339,7 @@ namespace sjtu {
                 if (p->next != invalid_off) {
                     nxt = Getnode(p->next);
                     if (nxt->NumChild > PageSize / 2) sit = 2;
+                	
                 }
             }
             switch (sit) {
@@ -360,12 +357,13 @@ namespace sjtu {
                     for (int i = 0; i < nxt->NumChild - 1; i++) {
                         nxt->data[i] = nxt->data[i + 1];
                     }
-                    fa->data[pos - 1] = p->data[0];
+                    if(pos)fa->data[pos - 1] = p->data[0];
                     fa->data[pos] = nxt->data[0];
                     nxt->NumChild--;
                     save_node(nxt);
                     save_node(p);
                     save_node(fa);
+                    FuckNode(pre);
                     FuckNode(nxt);
                     return true;
                 }
@@ -375,10 +373,14 @@ namespace sjtu {
                     if (p->next != invalid_off && pos_p != fa->NumChild - 1) {
                         MergeLeafPage(p, nxt, fa);
                         FuckNode(pre);
+                        FuckNode(nxt);
                     }
                     else {
                         MergeLeafPage(pre, p, fa);
                         FuckNode(nxt);
+                        save_node(pre);
+                        FuckNode(p);
+                        p=pre;
                     }
                     return false;
                 }
@@ -392,13 +394,14 @@ namespace sjtu {
          *  Case 1: Lend from left brother
          *  Case 2: Lend from right brother
          */
-        void LendMergeIndex(node* p) {
+        void LendMergeIndex(node*  p) {//p自行處理
             if (p == root) {
                 /*
                  *  Special case: leaf page is right under root
                  */
                 if (p->NumChild == 1) {
                     root = Getnode(p->Children[0]);
+                    FuckNode(p);
                     root->father = invalid_off;
                     save_node(root);
                     return;
@@ -410,8 +413,6 @@ namespace sjtu {
                     if (child0->NumChild == IndexSize / 2 && child1->NumChild == IndexSize / 2) {
                         EraseRoot();
                     }
-                    save_node(child0);
-					save_node(child1);
 					FuckNode(child0);
                     FuckNode(child1);
                 }
@@ -419,26 +420,29 @@ namespace sjtu {
             }
             node *fa = Father(p);
             node *brother = nullptr;
+            if(fa==root){
+            	//printf("嘿嘿嘿\n"); 	
+            }
             int sit = 0;
             int pos = fa->PosSearch(p->pos);
             if (pos >= 1) {
                 brother = Getnode(fa->Children[pos - 1]);
                 if (brother->NumChild - 1 > IndexSize / 2) sit = 1;
+                else FuckNode(brother);
             }
             if (!sit) {
                 if (pos + 1 < fa->NumChild) {
                     brother = Getnode(fa->Children[pos + 1]);
                     if (brother->NumChild - 1 > IndexSize / 2) sit = 2;
+                	else FuckNode(brother);
                 }
             }
             switch (sit) {
                 case 0: {
                     if (fa == root && fa->NumChild == 2) {
                         EraseRoot();
-                        save_node(fa);
-						save_node(brother);
-						FuckNode(fa);
-                        FuckNode(brother);
+                        //FuckNode(brother);
+                        FuckNode(p);
                         return;
                     }
                     if (pos + 1 < fa->NumChild) MergeIndexPage(p, fa, pos);
@@ -446,16 +450,22 @@ namespace sjtu {
                         node *lbro = Getnode(fa->Children[pos - 1]);
                         MergeIndexPage(lbro, fa, pos - 1);
                         save_node(lbro);
-						FuckNode(lbro);
+						FuckNode(p);
+						p=lbro;
                     }
-
+					bool flag=0;
                     if (fa->NumChild <= IndexSize / 2) { // fa->NumChild <= IndexSize / 2 ??
                         LendMergeIndex(fa);
+                        flag=1;
                     }
-					save_node(brother);
-					save_node(fa);
-                    FuckNode(brother);
-                    FuckNode(fa);
+                    if(!flag){
+                    	save_node(fa);
+                    	FuckNode(fa);
+                    }
+					//save_node(brother);
+                    save_node(p);
+                    //FuckNode(brother);
+                    FuckNode(p);
                     break;
                 }
                 case 1: {
@@ -479,8 +489,10 @@ namespace sjtu {
                     save_node(grandson);
                     save_node(p);
                     save_node(fa);
+                    save_node(brother);
                     FuckNode(fa);
                     FuckNode(grandson);
+                    FuckNode(p);
                     FuckNode(brother);
                     break;
                 }
@@ -488,12 +500,13 @@ namespace sjtu {
                     /*
                      *  Lend from right brother
                      */
+                     //printf("11111111111111111111111\n");
                     node *grandson = Getnode(brother->Children[0]);
                     grandson->father = p->pos;
                     p->Children[p->NumChild] = grandson->pos;
-                    p->NumChild++;
+                    
                     p->data[p->NumChild - 1] = grandson->data[0];
-
+					p->NumChild++;
                     for (int i = 0; i < brother->NumChild - 2; i++) {
                         brother->data[i] = brother->data[i + 1];
                     }
@@ -501,12 +514,14 @@ namespace sjtu {
                         brother->Children[i] = brother->Children[i + 1];
                     }
                     brother->NumChild--;
-                    fa->data[pos] = brother->data[0];
+                    fa->data[pos] = brother->data[0];//!!!!!!!!!此处有更改 +1
 
                     save_node(p);
                     save_node(brother);
                     save_node(fa);
+                    save_node(grandson);
                     FuckNode(fa);
+                    FuckNode(p);
                     FuckNode(brother);
                     FuckNode(grandson);
                     break;
@@ -523,12 +538,11 @@ namespace sjtu {
             for (int i = pos; i < fa->NumChild; i++) {
                 fa->Children[i] = fa->Children[i + 1];
             }
-            fa->data[pos - 2] = p->data[0];
-            for (int i = pos - 1; i < fa->NumChild - 2; i++) {
+            if(pos>=2)fa->data[pos - 2] = p->data[0];
+            for (int i = pos-1; i < fa->NumChild - 2; i++) {
                 fa->data[i] = fa->data[i + 1];
             }
             fa->NumChild--;
-            //p->next = invalid_off;
             if (tailLeaf == nxt->pos) {
                 tailLeaf = p->pos;
                 p->next = invalid_off;
@@ -541,7 +555,7 @@ namespace sjtu {
             }
             save_node(p);
             save_node(fa);
-            
+            //FuckNode(nxt);
             //delete nxt;
         }
 
@@ -556,7 +570,7 @@ namespace sjtu {
                 tmp->father = p->pos;
                 p->data[i - 1] = tmp->data[0];
                 save_node(tmp);
-                FuckNode(tmp);
+                delete tmp;
             }
             p->NumChild += brother->NumChild;
             for (int i = pos_p + 1; i < fa->NumChild - 1; i++) {
@@ -603,9 +617,10 @@ namespace sjtu {
                 next = invalid_off;
                 ans++;
             }
-			~node(){
-				ans--;
-			}
+            ~node(){
+            	ans--;
+            }
+            
             bool Fewer(Key a, Key b, Compare C = Compare()) {
                 return C(a, b);
             }
@@ -657,6 +672,7 @@ namespace sjtu {
                 for (int i = 0; i < NumChild; i++) {
                     if (Children[i] == pos) return i;
                 }
+                return -1;
             }
 
             void PrintLeafNode() {
@@ -692,11 +708,11 @@ namespace sjtu {
                 place = 0;
             }
 
-            iterator(node *p, Bptree *bp, int t){
+            iterator(node *p, Bptree *Bp, int t){
             	if(p!=NULL)origin =new node(*p);
             	else origin=NULL;
                 place = t;
-                bp = bp;
+                bp = Bp;
             	
             }
 
@@ -709,6 +725,17 @@ namespace sjtu {
 			~iterator(){
 				if(origin!=NULL)delete origin;
 			}
+			iterator& operator=(const iterator &other) {
+				if(origin!=NULL)delete origin;
+                if(other.origin!=NULL)origin =new node(*other.origin);
+                else origin=NULL;
+                place = other.place;
+                bp = other.bp;
+            	return *this;
+            }
+			
+			
+			
             /*
              *  iter++
              */
@@ -837,10 +864,10 @@ namespace sjtu {
             if (!file) {
                 //std::cout << "file not exist...\n";
                 CurrentLen = 0;
-                file.open(fname, std::fstream::out);
+                file.open(fname, std::fstream::out| std::fstream::binary);
                 //std::cout << "new file <" << fname << "> has been added to dir\n";
                 file.close();
-                file.open(fname,std::fstream::out | std::fstream::in | std::fstream::binary);
+                file.open(fname);
                 save_main();
             } else {
                 //std::cout << "File exist...\n";
@@ -873,10 +900,10 @@ namespace sjtu {
             node *p = Search(key);
             int flag = 1;
             while (p->pos != headLeaf) {
-                if (p->data[0].first == key) {
+                if (Equal(key,p->data[0].first)) {
                     flag = 0;
                     node *tmp = Getnode(p->prev);
-                    delete p;
+                    FuckNode(p);
                     p = tmp;
                 } else {
                     break;
@@ -887,18 +914,19 @@ namespace sjtu {
                     if (p->data[i].first == key) {
                     	
                         iterator it(p, this, i);
-                    	delete p;
+                    	FuckNode(p);
                     	return it;
                     }
                 }
+              FuckNode(p);
                 return end();
             } else {
                 if (p->data[p->NumChild - 1].first != key) {
                     node *tmp = Getnode(p->next);
-                    delete p;
+                    FuckNode(p);
                     if (tmp->data[0].first == key) {
                    	 	iterator it(tmp, this, 0);
-                   	 	delete tmp;
+                   	 	FuckNode(tmp);
                    	 	return it;
                    	 }
                    	 FuckNode(tmp);
@@ -907,10 +935,11 @@ namespace sjtu {
                     for (int i = 0; i < p->NumChild; i++) {
                         if (p->data[i].first == key) {
                             iterator it(p, this, i);
-                        	delete p;
+                        	  FuckNode(p);
                         	return it;
                         }
                     }
+                     FuckNode(p);
                     return end();
                 }
             }
@@ -933,7 +962,7 @@ namespace sjtu {
 
         node *Search(Key key) {
             if (CurrentLen == 0) return nullptr;
-            node *p = root;
+            node *p =root;
             int flag;
             while (p->type != 1) {
                 flag = 0;
@@ -964,17 +993,17 @@ namespace sjtu {
             // std::cout << "A new train is created, the train id is: " << value.first << ". ";
             // std::cout << "Train information is: " << value.second << "\n";
             if (CurrentLen == 1) {
-                node *newleaf = NewNode();
+                node *newleaf = NewNode(1);
                 newleaf->NumChild++;
                 newleaf->data[0] = value;
                 save_node(newleaf);
                 tailLeaf = newleaf->pos;
                 headLeaf = newleaf->pos;
-                delete root;
+                //if(root!=NULL)delete root;
                 root = newleaf;
                 return;
             }
-
+			
             node *p = Search(value.first);
             /*
              *  Case 1: the leaf page isn't full yet
@@ -1042,6 +1071,7 @@ namespace sjtu {
                 }
                 p->BinErase(key);
                 save_node(p);
+                FuckNode(p);
                 return;
             }
 
@@ -1053,10 +1083,11 @@ namespace sjtu {
                  */
                 p->BinErase(key);
                 int pos_p = fa->PosSearch(p->pos);
-                if (fa->data[pos_p - 1].first != p->data[0].first) {
+                if (pos_p>0&&fa->data[pos_p - 1].first != p->data[0].first) {
                     fa->data[pos_p - 1] = p->data[0];
                     save_node(fa);
                 }
+                save_node(fa);
                 save_node(p);
                 FuckNode(p);
                 FuckNode(fa);
@@ -1070,8 +1101,6 @@ namespace sjtu {
                      */
                     p->BinErase(key);
                     LendMergeLeaf(p, fa);
-					save_node(p);
-					save_node(fa);
                     FuckNode(p);
                     FuckNode(fa);
                 } else {
@@ -1084,11 +1113,14 @@ namespace sjtu {
 					bool flag=0;
                     if (!LendMergeLeaf(p, fa)) {
                         LendMergeIndex(fa);
+                        save_node(p);
                         FuckNode(p);
-                        FuckNode(fa);
+                        //FuckNode(fa);
 						flag=1;
 					}
 					if(!flag){
+						save_node(p);
+						save_node(fa);
 						FuckNode(p);
 						FuckNode(fa);
 					}
