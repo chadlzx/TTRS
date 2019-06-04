@@ -18,12 +18,71 @@
 constexpr off_t invalid_off = 0xdeadbeef;
 namespace sjtu {
     int ans = 0;
-
+	template<class T>
+	class shuzu{
+		public:
+		int len;
+		char *filename;
+        std::fstream file;
+		shuzu(const char *fname){
+            filename = new char[strlen(fname) + 1];
+            strcpy(filename, fname);
+            
+        	file.open(fname, std::fstream::out | std::fstream::in | std::fstream::binary);
+            if (!file) {
+                len=0;
+                file.open(fname, std::fstream::out | std::fstream::binary);
+                file.close();
+                file.open(fname, std::fstream::out | std::fstream::in | std::fstream::binary);
+                save_main();
+            } else {
+                read_info();
+            }
+		}
+		
+		~shuzu(){
+			save_main();
+			delete[] filename;
+            file.close();
+		}
+		void save_main(){
+			file.seekp(0);
+            file.write(CAST(&len), sizeof(int));
+		}
+		void read_info(){
+			file.seekg(0);
+            file.read(CAST(&len), sizeof(int));
+		}
+		T get(int k){
+			file.seekg(sizeof(int)+(k-1)*sizeof(T));
+			T now;
+			file.read(CAST(&now),sizeof(T));
+			return now;
+		}
+		int insert(T& b){
+            file.seekp(0, std::ios::end);
+            file.write(CAST(&b), sizeof(T));
+			return ++len;
+		}
+		void change(int k,T& b){
+			file.seekp(sizeof(int)+(k-1)*sizeof(T));
+			file.write(CAST(&b), sizeof(T));
+		}
+		int size(){
+			return len;
+		}
+	};
+	
+	
+	
+	
+	
+	
     template<
             class Key,
             class T,
-            int IndexSize = 5,
-            int PageSize = 5,
+            int IndexSize = 11,
+            int PageSize = 11,
             class Compare = std::less<Key>
     >
     class Bptree {
@@ -263,6 +322,7 @@ namespace sjtu {
 
             for (int i = child0->NumChild ; i < child0->NumChild + bro->NumChild; i++) {
                 child0->Children[i] = bro->Children[i - child0->NumChild];
+                
                 if(child0->type==0){//tmp为leaf
 					leafnode *tmp = GetLeafNode(bro->Children[i- child0->NumChild]);//cnm
 					tmp->father = child0->pos;
@@ -692,7 +752,6 @@ namespace sjtu {
             indexnode *brother = GetIndexnode(fa->Children[pos_p + 1]);
             for (int i = p->NumChild; i < p->NumChild + brother->NumChild; i++) {
                 p->Children[i] = brother->Children[i - p->NumChild];
-                
 				if(p->type==1){
 					indexnode *tmp = GetIndexnode(p->Children[i]);
 					tmp->father = p->pos;
@@ -1105,12 +1164,17 @@ namespace sjtu {
                     for (int i = 0; i < p->NumChild - 1; i++) {
                         if (Fewer(key, p->data[i])) {
                             off_t nextp = p->Children[i];
-                             int k=p->type;
-                            FuckIndexNode(p);
-                            if (k == 1) p = GetIndexnode(nextp);
+                            if (p->type== 1) {
+                            	indexnode* next= GetIndexnode(nextp);
+                            	next->father = p->pos;
+                            	 FuckIndexNode(p);
+                            	 p=next;save_index_node(p);
+                            }
                             else {
+                            	
                                 ans = GetLeafNode(nextp);
-                                return ans;
+                                ans->father=p->pos;          
+                                FuckIndexNode(p);return ans;
                             }
                             flag = 1;
                             break;
@@ -1118,12 +1182,16 @@ namespace sjtu {
                     }
                     if (!flag) {
                         off_t nextp = p->Children[p->NumChild - 1];
-                        int k=p->type;
-                        FuckIndexNode(p);
-                        if (k == 1) p = GetIndexnode(nextp);
+                        if (p->type== 1) {
+                            indexnode* next= GetIndexnode(nextp);
+                            next->father = p->pos;
+                            FuckIndexNode(p);
+                            p=next;
+                        }
                         else {
                             ans = GetLeafNode(nextp);
-                            return ans;
+                            ans->father=p->pos;          
+                            FuckIndexNode(p);return ans;
                         }
                     }
                 }

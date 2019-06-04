@@ -351,7 +351,7 @@ struct train{
 
     int num_station;
 
-    Station station[60];
+    Station station[50];
 
     bool issale;
 
@@ -644,15 +644,14 @@ struct ticket{
 
 
 
-Bptree<int,user> USER("user");//用户数据库
-
 /*
 车次数据库
 */
 
+shuzu<train> data_train("data_train");
+shuzu<user> data_user("data_user");
 
-
-Bptree<String<20>,train> TRAIN("train");//根据train_id排序
+Bptree<String<20>,int> TRAIN("train");//根据train_id排序
 
 Bptree<String<40>,String<20> >  Train_Index("train_index");
 
@@ -737,7 +736,7 @@ bool cmp(const ticket& a,const ticket& b){
 
 bool check(int id){
 
-    if(id<2019||id>USER.size()+2017)return 0;
+    if(id<2019||id>data_user.size()+2017)return 0;
 
     return 1;
 
@@ -755,11 +754,11 @@ void Register(String<40> name,String<20> password,String<20> email,String<20> ph
 
     user now(name,password,email,phone);
 
-    now.id=USER.size()+2018;
+    now.id=data_user.size()+2018;
 
     if(now.id==2019)now.privilege=2;
 
-    USER.insert(std::pair<int,user>(now.id,now));
+    data_user.insert(now);
 
     printf("%d\n",now.id);
 
@@ -786,7 +785,7 @@ void Login(int id,String<20> Password){
 
     }
 
-    user now=(*(USER.find(id))).second;
+    user now=data_user.get(id-2017);
 
     if(now.password==Password)printf("1\n");
 
@@ -813,7 +812,7 @@ void query_profile(int id){
 
     }
 
-    user now=(*(USER.find(id))).second;
+    user now=data_user.get(id-2017);
 
     now.print();
 
@@ -832,15 +831,9 @@ int modify_profile(int id,String<40> Name,String<20> Password,
 
     if(!check(id))return 0;
 
-    auto iter = USER.find(id);
-    user now=(*iter).second;
-    //now.print();
+    user now=data_user.get(id-2017);
     now.change(Name,Password,Email,Phone);
-    //now.print();
-    USER.Modify(iter, now);
-
-    //USER.erase(id);USER.insert(std::pair<int,user>(id,now));
-    //cout << sjtu::ans << " dsb ";
+    data_user.change(id-2017, now);
     return 1;
 
 }
@@ -857,8 +850,7 @@ int modify_profile(int id,String<40> Name,String<20> Password,
 int modify_privilege(int id1,int id2,int pri){
 
     if(!check(id1)||!check(id2))return 0;
-    auto iter1=USER.find(id1);auto iter2=USER.find(id2);
-    user now1=(*iter1).second,now2=(*iter2).second;
+    user now1=data_user.get(id1-2017),now2=data_user.get(id2-2017);
 
     if(now1.privilege==1)return 0;
 
@@ -866,7 +858,7 @@ int modify_privilege(int id1,int id2,int pri){
 
     now2.privilege=pri;
 
-    USER.Modify(iter2,now2);
+    data_user.change(id2-2017,now2);
     //USER.erase(id2);USER.insert(std::pair<int,user>(id2,now2));
 
     return 1;
@@ -935,10 +927,10 @@ int add_train(String<20> Id,String<40> Name,String<10> Catalog,int Num_station,
     if(check_trainID(Id))return 0;
 
     train now(Id,Name,Catalog,Num_station,num_price,name_price,station);
-
-    TRAIN.insert(std::pair<String<20>,train>(Id,now));
-
-    //now.print();
+    
+    int pos=data_train.insert(now);
+    
+    TRAIN.insert(std::pair<String<20>,int>(Id,pos));
 
     return 1;
 
@@ -954,18 +946,11 @@ int sale_train(String<20> ID){
 
     if(!check_trainID(ID))return 0;
     auto iter = TRAIN.find(ID);
-    train now=(*iter).second;
-
+    train now=data_train.get((*iter).second);
     if(now.issale)return 0;
-
     now.issale=1;
-    TRAIN.Modify(iter, now);
-    //TRAIN.erase(ID);TRAIN.insert(std::pair<String<20>,train>(ID,now));
-
-
-
+    data_train.change((*iter).second,now);
     for(int i=0;i<now.num_station;i++)
-
         Train_Index.insert(std::pair<String<40>,String<20> >(now.station[i].name,ID));
 
 
@@ -986,25 +971,15 @@ int sale_train(String<20> ID){
 void query_train(String<20> ID){
 
     if(!check_trainID(ID)){
-
         printf("0\n");
-
         return;
-
     }
-
-    train now=(*(TRAIN.find(ID))).second;
-
+    train now=data_train.get((*(TRAIN.find(ID))).second);
     if(!now.issale){
-
         printf("0\n");
-
         return;
-
     }
-
     now.print();
-
 }
 
 
@@ -1017,15 +992,10 @@ void query_train(String<20> ID){
 
 
 int delete_train(String<20> ID){
-
     if(!check_trainID(ID))return 0;
-
-    train now=(*(TRAIN.find(ID))).second;
-
+    train now=data_train.get((*(TRAIN.find(ID))).second);
     if(now.issale)return 0;
-
     TRAIN.erase(ID);
-
     return 1;
 
 }
@@ -1047,16 +1017,12 @@ int modify_train(String<20> Id,String<40> Name,String<10> Catalog,int Num_statio
 
     if(!check_trainID(Id))return 0;
     auto iter = TRAIN.find(Id);
-    train now=(*iter).second;
+    train now=data_train.get((*iter).second);
 
     if(now.issale)return 0;
 
     train now2(Id,Name,Catalog,Num_station,num_price,name_price,station);
-    TRAIN.Modify(iter, now2);
-    //TRAIN.erase(Id);
-
-    //TRAIN.insert(std::pair<String<20>,train>(Id,now2));
-
+    data_train.change((*iter).second,now2);
     return 1;
 
 }
@@ -1078,7 +1044,6 @@ int modify_train(String<20> Id,String<40> Name,String<10> Catalog,int Num_statio
 
 int clean(){
 
-    USER.clear();
 
     TRAIN.clear();
 
@@ -1131,12 +1096,12 @@ bool query_ticket(String<40> Loc1,String<40> Loc2,String<12> Data,String<10> Cat
 
     auto it=Train_Index.find(Loc1);
     int sum=0;
-    ticket t[1000];
+    ticket t[500];
     if(Loc1==Loc2)return 0;
     if(Data<(String<12>("2019-06-01"))||Data>(String<12>("2019-06-30")))return 0;
     while((*it).first==Loc1&&it!=Train_Index.end()){
     	auto iter = TRAIN.find((*it).second);
-        train now=(*iter).second;
+        train now=data_train.get((*iter).second);
         ++it;
         if(!now.catalog.beibaohan(Catalog))continue;
         int k1=now.at(Loc1),k2=now.at(Loc2);
@@ -1232,7 +1197,7 @@ bool query_transfer(String<40> loc1,String<40> loc2,String<12> data,String<10> c
 
 
 
-        train now1=(*(TRAIN.find((*it1).second))).second;it1++;
+        train now1=data_train.get((*(TRAIN.find((*it1).second))).second);it1++;
 
 
 
@@ -1254,7 +1219,7 @@ bool query_transfer(String<40> loc1,String<40> loc2,String<12> data,String<10> c
 
 
 
-            train now2=(*(TRAIN.find((*it2).second))).second;it2++;
+            train now2=data_train.get((*(TRAIN.find((*it2).second))).second);it2++;
 
 
 
@@ -1306,7 +1271,7 @@ bool buy_ticket(int id,int num,String<20> train_id,String<40> loc1,
 
 
     auto iter=TRAIN.find(train_id);
-    train now=(*iter).second;
+    train now=data_train.get((*iter).second);
 
 
 
@@ -1351,7 +1316,7 @@ bool buy_ticket(int id,int num,String<20> train_id,String<40> loc1,
     printf("1\n");
     if(!flag)TICKET.insert(std::pair<KEY2,ticket>(key,t));
     else TICKET.Modify(it,t);
-    TRAIN.Modify(iter,now);
+    data_train.change((*iter).second,now);
     //TRAIN.erase(train_id);TRAIN.insert(std::pair<String<20>,train>(train_id,now));
     return 1;
 
@@ -1379,7 +1344,7 @@ bool query_order(int id,String<12> data,String<10> catalog){
 
     while((*it).first==KEY2(id,data)&&it!=TICKET.end()){
 
-        train now=(*(TRAIN.find(((*it).second.train_id)))).second;
+        train now=data_train.get((*(TRAIN.find(((*it).second.train_id)))).second);
 
         if(now.catalog.beibaohan(catalog))
 
@@ -1395,7 +1360,7 @@ bool query_order(int id,String<12> data,String<10> catalog){
 
     while((*it).first==KEY2(id,data)&&it!=TICKET.end()){
 
-        train now=(*(TRAIN.find(((*it).second.train_id)))).second;
+        train now=data_train.get((*(TRAIN.find(((*it).second.train_id)))).second);
 
         if(now.catalog.beibaohan(catalog))
 
@@ -1419,8 +1384,8 @@ bool refund_ticket(int id,int num,String<20> train_id,String<40> loc1,
 
     if(!TRAIN.count(train_id))return 0;
     auto iter =TRAIN . find(train_id);
-    train now=(*iter).second;
-
+    train now=data_train.get((*iter).second);
+	
     KEY2 key(id,data,train_id,loc1,loc2);
 
 
@@ -1468,7 +1433,7 @@ bool refund_ticket(int id,int num,String<20> train_id,String<40> loc1,
 
 
            // TRAIN.erase(t.train_id);
-            TRAIN.Modify(iter,now);
+            data_train.change((*iter).second,now);
             //TRAIN.insert(std::pair<String<20>,train>(train_id,now));
 
 
@@ -1550,12 +1515,11 @@ int siz=0;
     if(TRAIN.size()==0){
         train val;
         String<20> train_id;
-        TRAIN.insert(std::pair<String<20>,train >(train_id,val));
+        TRAIN.insert(std::pair<String<20>,int >(train_id,0));
     }
-    if(USER.size()==0){
-        int k=0;
-        user val;
-        USER.insert(std::pair<int,user >(k,val));
+    if(data_user.size()==0){
+        int k=0;user val;
+        data_user.insert(val);
     }
     while(true){
 
