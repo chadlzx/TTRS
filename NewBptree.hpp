@@ -977,6 +977,7 @@ namespace sjtu {
                     return end();
                 }
             }
+			return end();
         }
 
         iterator begin() {

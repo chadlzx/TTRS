@@ -11,7 +11,7 @@
 
 #include<algorithm>
 
-#include "NewBptree.hpp"
+#include "nnbptree.hpp"
 
 using namespace std;
 
@@ -1533,14 +1533,14 @@ String<20> sregister("register"),slogin("login"),squery_profile("query_profile")
 
 int main(){
 
-    //freopen("3.in","r",stdin);
+    //freopen("user.out","w",stdout);
 
     char op[45];
 int siz=0;
     if(TICKET.size()==0){
         ticket t;
         KEY2 key;
-        TICKET.insert(std::pair<KEY2,ticket>(key,t));\
+        TICKET.insert(std::pair<KEY2,ticket>(key,t));
 	}
     if(Train_Index.size()==0){
         String<40> key;
@@ -1563,8 +1563,13 @@ int siz=0;
 
         String<20> p(op);
 
-        //siz++;
+        siz++;
         //printf("siz::%d\n",siz);
+        
+        if(siz==41){
+        	//printf("sb\n");
+        }
+        
         if(p==sregister){
 
             scanf("%s",op);String<40> name(op);
